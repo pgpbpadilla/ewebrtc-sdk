@@ -1,24 +1,25 @@
-# NodeJS Developer Hosted Server (DHS) for AT&T WebRTC JS SDK
+# Node.js DHS for AT&T Enhanced WebRTC JavaScript SDK
 
-A node application with the following functionality:
-  * Manage configuration options for the SDK's Node Sample Application
-  * Manage Application configuration (application key, secret, redirect_uri, etc.)
-  * Handle AT&T OAuth Token creation using credentials and scope.
-  * Create E911 Id given an address
+This Node.js Developer Hosted Server (DHS) is a node application that enables you to manage the following:
+
+* Configuration options for the SDK's sample application
+* App configuration (app key, app secret, redirect_uri, etc.)
+* AT&T OAuth token creation using credentials and scope
+* E911 ID creation
 
 ## Contents of this Package
 
-This package contains the software necessary to run a DHS to be used together with
-a NodeJS Sample Web Application.
+This package contains the software necessary to run a DHS for
+a Node.js sample Web app.
 
 - `/package.json` - Configuration options
-- `/att-webrtc-dhs.js` - Main NodeJS program
+- `/att-webrtc-dhs.js` - Main Node.js program
 
 ## Configuring the DHS
 
-The configuration is located in the file: `/package.json`
+The following configuration options are located in `/package.json`:
 
-### DHS Specific Configuration
+### DHS-Specific Configuration
 
 ```javascript
 "dhs_config": {
@@ -38,7 +39,7 @@ The configuration is located in the file: `/package.json`
     "127.0.0.1:9001"]
 }
 ```
-### WebRTC API Specific Configuration
+### WebRTC-API Specific Configuration
 
 ```javascript
 "sandbox": {
@@ -53,9 +54,9 @@ The configuration is located in the file: `/package.json`
 
 ## Running the Server
 
-** NOTE: Make sure to use the sample application using an internet connection that's not restricted. **
+**Note:** the sample app requires an Internet connection that is not restricted. If you’re using a VPN, you must enable media streaming for the applicable ports.
 
-### Install NodeJS dependencies
+### Installing Node.js dependencies
 
 ```bash
 $ npm install
@@ -67,7 +68,7 @@ $ npm install
 $ npm start
 ```
 
-**NOTE**: The `start` script will use the sandbox environment by default. You can start the DHS for other environments:
+**Note**: The `start` script uses the sandbox environment by default. To start the DHS for other environments:
 
   * `sandbox` - Use this environment for your testing.
 
@@ -75,14 +76,14 @@ $ npm start
   $ node att-webrtc-dhs.js sandbox
   ```
 
-  * `prod` - Use this environment when you are ready for production.
+  * `prod` - Use this environment when you are ready for production deployment.
 
   ```bash
   $ node att-webrtc-dhs.js prod
   ```
 
 
-## RESTful API
+## Calling the RESTful API
 
 ### Getting the DHS Configuration
 ```
@@ -188,11 +189,3 @@ POST /e911ids
   }
 }
 ```
-
-## Glossary
-* API: Application Programming Interface
-* GA: General Availability
-* DHS: Developer Hosted Server
-* JS: JavaScript
-* SDK: Software Development Kit
-* WebRTC: Web Real-Time Communications, a W3C standard

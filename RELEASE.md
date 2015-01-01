@@ -1,30 +1,48 @@
 # AT&T Enhanced WebRTC JS SDK
 
-The SDK provides the following components:
+This SDK includes the following components:
 
-* JavaScript library - a client library to consume AT&T Enhanced WebRTC API.
-* NodeJS Sample Application - Web Application to demonstrate the features
-of the JavaScript library. **Please refer to [node-sample/RELEASE.md](node-sample/RELEASE.md) for Sample Applications-specific notes**.
-* NodeJS Developer Hosted Server - NodeJS application to manage application assets (key, secret, etc.) and to generate OAuth access tokens and E911 Ids.
-**Please refer to [node-dhs/RELEASE.md](node-dhs/RELEASE.md) for DHS-specific notes**.
+* JavaScript library - a client library to consume the AT&T Enhanced WebRTC API.
+* Node.js sample application - a Web app demonstrating the features
+of the JavaScript library.   **Please refer to `node-sample/RELEASE.md` for sample app-specific notes**.
+* DHS - a Node.js server for managing application assets such as app key and app secret, and generating OAuth access tokens and E911 IDs. **Please refer to [node-dhs/RELEASE.md](node-dhs/RELEASE.md) for DHS-specific notes**.
 
-# v1.0.0-rc.7
+## Features of the JavaScript library
 
-## Features
+The following features and functionality are available in the current SDK release for all three supported calling types (AT&T Mobile Number, Virtual Number, and Account ID):
 
-* Chrome v39
+### Chrome v39
 
-  *	Basic audio and video call management – make, receive, answer, end, mute, unmute, hold, resume, cancel, and reject calls
-  *	Basic audio and video conferencing – create a conference, add and remove participants, hold, resume, mute, unmute and end conference
-  *	Advanced call management – move, transfer, add a second call, switch between two calls
-  *	Audio and video calls can be moved browser-to-browser
-  *	Audio calls can be moved from the browser to an AT&T Mobile Device
+*	**Basic audio and video call management** – make, receive, answer, end, mute, unmute, hold, resume, cancel, and reject calls.
+*	**Basic audio and video conferencing** – create a conference, add and remove participants, hold, resume, mute, unmute and end conference.
+  *	Supports dialing out to add participants.
+*	**Advanced call management** – move, transfer, add a second call, switch between two calls.
+  *	Audio and video calls can be moved Web-to-Web
+  *	Audio calls can be moved from the Web to an AT&T mobile phone
 
 
-* Firefox v33
+### Firefox v33
 
-  *	Basic audio and video call management – make, receive, answer, end, mute, unmute, hold, resume, cancel, and reject calls
-  *	Basic audio and video conferencing – create a conference, add and remove participants, hold, resume, mute, unmute and end conference
+*	**Basic audio and video call management** – make, receive, answer, end, mute, unmute, hold, resume, cancel, and reject calls.
+*	**Basic audio and video conferencing** – create a conference, add and remove participants, hold, resume, mute, unmute and end conference.
+  *	Supports dialing out to add participants.
+
+### Upcoming features
+
+The following features will be added soon:
+
+*	Move a Web video call to an audio call on an AT&T mobile phone
+*	DTMF (dialing) tones
+*	Upgrade or downgrade between audio and video
+*	Firefox browser support
+
+# v1.0.0-rc.9
+
+December 31, 2014
+
+* Enhancement: improves call establishment time.
+* Change: less verbose logging.
+* Change: provide full user name on event data for all phone events.
 
 ## Known Issues
 
@@ -63,3 +81,24 @@ is shown.
 * Firefox Version 33.1 for OSX v10.8.5 and Windows 8
 
 **_The SDK may also work for other Operating Systems, other Browsers but is not tested or supported._**
+
+
+# Changelog
+
+## v1.0.0-rc.7
+
+### Features
+
+#### Chrome v39
+
+*	Basic audio and video call management – make, receive, answer, end, mute, unmute, hold, resume, cancel, and reject calls
+*	Basic audio and video conferencing – create a conference, add and remove participants, hold, resume, mute, unmute and end conference
+*	Advanced call management – move, transfer, add a second call, switch between two calls
+*	Audio and video calls can be moved browser-to-browser
+*	Audio calls can be moved from the browser to an AT&T mobile phone.
+
+
+#### Firefox v33
+
+*	Basic audio and video call management – make, receive, answer, end, mute, unmute, hold, resume, cancel, and reject calls
+*	Basic audio and video conferencing – create a conference, add and remove participants, hold, resume, mute, unmute and end conference

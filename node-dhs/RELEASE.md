@@ -1,10 +1,11 @@
 # Node.js DHS for the AT&T Enhanced WebRTC JavaScript SDK
 
-The DHS is a Node.js application with the following functionality:
-  * Manage configuration options for the SDK's Node Sample Application
-  * Manage Application configuration (application key, secret, redirect_uri, etc.)
-  * Handle AT&T OAuth Token creation using credentials and scope.
-  * Create E911 Id given an address.
+This Node.js Developer Hosted Server (DHS) is a node application that enables you to manage the following:
+
+* Configuration options for the SDK's sample application
+* App configuration (app key, app secret, redirect_uri, etc.)
+* AT&T OAuth token creation using credentials and scope
+* E911 ID creation
 
 # v1.0.0
 

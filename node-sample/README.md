@@ -42,9 +42,11 @@ Sample app configuration options are located in the file `/package.json`:
 ## Loading the Sample App
 
 1. Open a Chrome browser window or new tab.
-2. Load the URL: https://localhost:9001 to load the application.
+2. Enter the URL for the sample app in your browser. If you're running the sample app on the local computer, use the URL https://localhost:9001 to load the application.
 
-# RESTful API
+
+
+# RESTful API Information
 
 ## Register User
 
@@ -177,13 +179,3 @@ GET /oauth/callback
 ### Response
 
 `HTTP 302`
-
-
-## Glossary
-
-* API: Application Programming Interface
-* GA: General Availability
-* DHS: Developer Hosted Server
-* JS: JavaScript
-* SDK: Software Development Kit
-* WebRTC: Web Real-Time Communications, a W3C standard
