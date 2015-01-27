@@ -36,16 +36,27 @@ The following features will be added soon:
 *	Upgrade or downgrade between audio and video
 *	Firefox browser support
 
-# v1.0.0-rc.9
+# v1.0.0-rc.10
 
-December 31, 2014
+January 22, 2015
 
-* Enhancement: improves call establishment time.
-* Change: less verbose logging.
-* Change: provide full user name on event data for all phone events.
+* **Fix:** the `Phone` object will publish an error event on invalid scenarios for second call. The second call feature only supports scenarios that would result in the user having two simple calls, one call in the background (inactive) and one call in the foreground (active). Scenarios that would result in the user having one call and one conference are not supported and thus will generate an error.
+* **Fix:** `Phone.transfer` fails with error `Transfer terminated by Network` when the transfer target is an Account ID or Virtual Number user.
+* **Fix:** corrects various typos in log statements.
+* **Fix:** moving a call fails when the call is put on hold before invoking `Phone.move`.
+* **Change:** use short user name on `Phone` events (`event.from` and `event.to`)
+  * Account ID: `sip:user@domain.com` => `user`
+  * Mobile Number: `sip:1234567890@domain.com` => `1234567890`
+  * Virtual User: `tel:+1234567890` => `1234567890`
+* **New:** the `Phone` object will publish the `session:expired` event when the library detects that the current session has expired in the server. See the documentation for details in the payload of the event.
+* **New:** method `ATT.browser.isNetworkConnected` to check for network connectivity.
 
 ## Known Issues
 
+* While using Firefox, when removing a participant from a conference you could see the following error: `ReferenceError: event is not defined sample.js:593`
+* While using Firefox, calling a PSTN number could result in the following errors :
+  * `Renegotiation of session description is not currently supported. See Bug 840728 for status.` The call is established and the users can hear each other.
+  * `Could not negotiate answer SDP; cause = SDP_PARSE_FAILED | SDP Parsing Error: Warning: Unrecognized attribute (ice-mismatch) | SDP Parsing Error: c= connection line not specified for every media level, validation failed.s`. The call is established but the users cannot hear each other.
 * Canceling to give consent to a Mobile Number results in redirecting the user to an access denied error page. 
 * Resuming a video conference from the participant side results in no video on both host and participant sides. 
 * Transferring a call between Mobile Number and Account ID to a Virtual Number, the Virtual Number user will not get the video of the Account ID. 
@@ -57,7 +68,6 @@ December 31, 2014
 * Adding (non-provisioned) Mobile Device as a participant to a conference results in one way audio with the notification `Media conference forbidden for this recipient`. 
 * Adding Account ID participant to a conference when the host is Virtual Number fails with message: `User Not Found`. 
 * List of participants is not cleared when ending a conference. 
-* `Phone.transfer` fails with error `Transfer terminated by Network` when the transfer target is an Account ID or Virtual Number user.
 * `call:move-terminated` event is not fired when successfully completing `phone.move`.
 * After successfully adding a Mobile Device to a Conference it will be disconnected after ~24s.
 * Adding multiple participants at once using `Phone.addParticipants` method fails with error: `SVC8501:MediaConference ongoing update participant operation.,Variables=`. Use `Phone.addParticipants`
@@ -84,6 +94,15 @@ is shown.
 
 
 # Changelog
+
+## v1.0.0-rc.9
+
+December 31, 2014
+
+* Enhancement: added 'session:expired' event to the phone object
+* Enhancement: improves call establishment time.
+* Change: less verbose logging.
+* Change: provide full user name on event data for all phone events.
 
 ## v1.0.0-rc.7
 

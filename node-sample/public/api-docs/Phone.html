@@ -216,6 +216,10 @@
 						</li>
 						
 						<li>
+							<a href="Phone.html#event:session:expired">Phone#session:expired</a>
+						</li>
+						
+						<li>
 							<a href="Phone.html#event:session:ready">Phone#session:ready</a>
 						</li>
 						
@@ -2739,7 +2743,7 @@ This method can fire <a href="Phone.html#event:error">Phone#event:error</a> even
 
         <tr>
             
-                <td class="name"><code>localVideo</code></td>
+                <td class="name"><code>localMedia</code></td>
             
 
             <td class="type">
@@ -2762,7 +2766,7 @@ This method can fire <a href="Phone.html#event:error">Phone#event:error</a> even
 
         <tr>
             
-                <td class="name"><code>remoteVideo</code></td>
+                <td class="name"><code>remoteMedia</code></td>
             
 
             <td class="type">
@@ -12853,6 +12857,433 @@ is deleted successfully. User can no longer make or recieve calls.</p>
         
             
 <dt>
+    <h4 class="name" id="event:session:expired">session:expired</h4>
+    
+    
+    <p class="summary">Session Expired event fires when session expires in the backend.</p>
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>The user has to be logged in order to be able to receive this event.
+This event is fired when we get '404' with 'Session id not found'
+or 'The requested session resource was not found'.
+The event is fired with an attached event data of the following format:</p>
+    </div>
+    
+
+    
+        <h5>Type:</h5>
+        <ul>
+            <li>
+                
+<span class="param-type">Object</span>
+
+
+            </li>
+        </ul>
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+	
+
+	<h5 class="subsection-title">Properties:</h5>
+
+	<dl>
+
+<table class="props table table-striped">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+
+		<th>Type</th>
+
+		
+		<th>Argument</th>
+		
+
+		
+
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+
+	<tbody>
+	
+
+        <tr>
+            
+                <td class="name"><code>error</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last"><p>Error object</p>
+                <h6>Properties</h6>
+
+<table class="props table table-striped">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+
+		<th>Type</th>
+
+		
+
+		
+
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+
+	<tbody>
+	
+
+        <tr>
+            
+                <td class="name"><code>JSObject</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>JavaScript object associated with the error</p></td>
+        </tr>
+
+	
+
+        <tr>
+            
+                <td class="name"><code>JSMethod</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>JavaScript method associated with the error</p></td>
+        </tr>
+
+	
+
+        <tr>
+            
+                <td class="name"><code>ErrorCode</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Error code associated with the error</p></td>
+        </tr>
+
+	
+
+        <tr>
+            
+                <td class="name"><code>ErrorMessage</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Message associated with the error</p></td>
+        </tr>
+
+	
+
+        <tr>
+            
+                <td class="name"><code>PossibleCauses</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Possible causes</p></td>
+        </tr>
+
+	
+
+        <tr>
+            
+                <td class="name"><code>PossibleResolution</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Possible resolution</p></td>
+        </tr>
+
+	
+
+        <tr>
+            
+                <td class="name"><code>APIError</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>API error associated with the error</p></td>
+        </tr>
+
+	
+
+        <tr>
+            
+                <td class="name"><code>ResourceMethod</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Resource method associated with the error</p></td>
+        </tr>
+
+	
+
+        <tr>
+            
+                <td class="name"><code>HttpStatusCode</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>HTTP status code associated with the error</p></td>
+        </tr>
+
+	
+
+        <tr>
+            
+                <td class="name"><code>MessageId</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>API message id associated with the error</p></td>
+        </tr>
+
+	
+	</tbody>
+</table>
+
+            </td>
+        </tr>
+
+	
+
+        <tr>
+            
+                <td class="name"><code>data</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last"><p>Additional information associated with the error</p></td>
+        </tr>
+
+	
+	</tbody>
+</table>
+</dl>
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+
+	
+
+	
+
+	
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
     <h4 class="name" id="event:session:ready">session:ready</h4>
     
     
@@ -13005,7 +13436,7 @@ The event is fired with an attached event data of the following format:</p>
 					
 		<span class="jsdoc-message">
 		Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.2</a>
-		on 2014-12-31T17:22:20-08:00 using the <a
+		on 2015-01-27T14:03:16-08:00 using the <a
 			href="https://github.com/terryweiss/docstrap">DocStrap template</a>.
 		</span>
 				</footer>

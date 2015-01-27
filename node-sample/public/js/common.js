@@ -203,6 +203,16 @@ function updateAddress(e911Id) {
 // This event is published to indicate that the session was successfully deleted.
 phone.on('session:disconnected', onSessionDisconnected);
 
+
+
+// ## Session expired  from Enhanced WebRTC
+// ### Register for _session:expired_ event
+// ---------------------------------
+// The [**session:expired**](../../lib/webrtc-sdk/doc/Phone.html#event:session:expired) event is published
+// when session is expired in the backend.
+// This event is published to indicate that there is a session deleted from the backend due to some reason.
+phone.on('session:expired', onSessionExpired);
+
 // ### Clear the current Enhanced WebRTC session
 // ---------------------------------
 function phoneLogout(callback) {
@@ -219,7 +229,6 @@ function phoneLogout(callback) {
     phone.logout();
   }
 }
-
 
 // # Basic Call Management
 // ## Making a call

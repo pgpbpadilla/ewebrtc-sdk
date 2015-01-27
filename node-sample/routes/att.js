@@ -39,6 +39,8 @@ var router = express.Router();
 //
 var api_endpoint;
 var authorize_uri;
+var redirect_uri;
+var default_redirect_uri = '../consent.html';
 var app_key;
 var app_scope;
 
@@ -88,6 +90,9 @@ router.get('/authorize', function (req, res){
   console.log('Got authorize request');
 
   var authorize_url = api_endpoint + authorize_uri + '?' + 'client_id=' + app_key + '&' + 'scope=' + app_scope;
+
+  redirect_uri = req.query.redirect_uri;
+
   console.log('Redirecting to: %s', authorize_url);
 
   res.redirect(authorize_url);
@@ -107,7 +112,7 @@ router.get('/authorize', function (req, res){
  * @param {Function} A callback
  * @api public
  */
-router.get('/callback', function (req, res){
+router.get('/callback', function (req, res) {
 
   console.log('Got callback request');
   console.log('Checking for Authorization Code');
@@ -115,7 +120,7 @@ router.get('/callback', function (req, res){
   var auth_code = req.query.code;
   console.log('Authorization code: %s', auth_code);
 
-  if(auth_code) {
+  if (auth_code) {
 
     console.log('Obtained authorization code');
     console.log('Caching it for this session...');
@@ -123,7 +128,13 @@ router.get('/callback', function (req, res){
     req.session.regenerate(function () {
       req.session.auth_code = auth_code;
       req.session.success = 'AT&T Subscriber authorized this app. Authorization code is ' + auth_code;
-      res.redirect('../consent.html?code=' + auth_code);
+
+      if (redirect_uri) {
+        res.redirect(redirect_uri + '?code=' + auth_code);
+      } else {
+        res.redirect(default_redirect_uri + '?code=' + auth_code);
+      }
+
       // OR
       // res.render('main_page');
       // OR

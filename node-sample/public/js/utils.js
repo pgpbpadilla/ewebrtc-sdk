@@ -437,6 +437,9 @@ function onNotification(data) {
 function onSessionDisconnected() {
   setMessage('WebRTC session has ended');
 }
+function onSessionExpired() {
+  setMessage('WebRtc session is deleted or expired');
+}
 
 function checkEnhancedWebRTCSession() {
   return sessionData.sessionId;
