@@ -23,7 +23,9 @@ For full instructions on deploying this SDK and sample app, see the [Enhanced We
 * Install the Node.js sample app dependencies by running `$ npm install` in the `node-sample` directory.
 * Start the DHS: Run `$ npm start` from the `node-dhs` directory
 * Start the Sample Application: Run `$ npm start` from the `node-sample` directory
-* Launch a Chrome browser to run the sample application: `https://localhost:9001/`
+* Launch a Chrome browser to run the sample application: `https://127.0.0.1:9001/`
+  * When initially loading the Sample app you will see the error: `NET::ERR_CERT_AUTHORITY_INVALID` 
+  	* Workaround: Add a security exception by clicking `Advanced` and then click on `Proceed to 127.0.0.1 (unsafe)`
 
 ## System Requirements
 

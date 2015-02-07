@@ -23,7 +23,7 @@ The following configuration options are located in `/package.json`:
 
 ```javascript
 "dhs_config": {
-  "dhs_host": "localhost",
+  "dhs_host": "127.0.0.1",
   "api_env": "sandbox",
   "http_port": 10010,
   "https_port": 10011,
@@ -46,7 +46,7 @@ The following configuration options are located in `/package.json`:
   "api_endpoint": "https://api.att.com",
   "app_key": "YourAppKey",
   "app_secret": "YourAppSecret",
-  "oauth_callback": "https://localhost:20021/oauth/callback",
+  "oauth_callback": "https://127.0.0.1:20021/oauth/callback",
   "virtual_numbers_pool": ["number1", "number2" ],
   "ewebrtc_domain": "your.ewebrtc_domain.com"
 }
@@ -108,7 +108,7 @@ N/A
   "api_endpoint":"https://api.att.com",
   "token_uri":"/oauth/token",
   "authorize_uri":"/oauth/authorize",
-  "oauth_callback":"https://localhost:20021/oauth/callback",
+  "oauth_callback":"https://127.0.0.1:20021/oauth/callback",
   "app_key":"YourAppKey",
   "scope_names":
     {

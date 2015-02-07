@@ -106,11 +106,10 @@ exports.HEROKU_ENV = HEROKU_ENV;
 //
 // API URIs for OAuth Services
 //
-var OAUTH_TOKEN_URI = '/oauth/token';
+var OAUTH_TOKEN_URI = '/oauth/v4/token';
+var OAUTH_AUTHORIZE_URI = '/oauth/v4/authorize';
 
 exports.OAUTH_TOKEN_URI = OAUTH_TOKEN_URI;
-
-var OAUTH_AUTHORIZE_URI = '/oauth/authorize';
 exports.OAUTH_AUTHORIZE_URI = OAUTH_AUTHORIZE_URI;
 
 //
@@ -187,7 +186,7 @@ exports.DEF_HEROKU_HOST = '0.0.0.0';
 // 
 var log;
 
-var dhs_name, dhs_version, dhs_host;
+var dhs_name, dhs_version;
 var cors_domains;
 
 var api_env, api_endpoint;
@@ -225,7 +224,6 @@ exports.initConfig = function (config) {
 
   dhs_name = config.dhs_name;
   dhs_version = config.dhs_version;
-  dhs_host = config.dhs_host;
   cors_domains = config.cors_domains;
 
   api_env = config.api_env;
@@ -363,7 +361,6 @@ exports.getServerConfig = function (req, res, next) {
   result.dhs_name = dhs_name;
   result.dhs_version = dhs_version;
 
-  result.dhs_host = dhs_host;
   result.dhs_http_url = dhs_http_url;
   result.dhs_https_url = dhs_https_url;
   result.cors_domains = cors_domains;
