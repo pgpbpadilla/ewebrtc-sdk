@@ -2083,14 +2083,14 @@ phone.formatNumber(&#x27;9234567890&#x27;); &#x2F;&#x2F; 1 (923) 456-7890</pre>
     <h4 class="name" id="getCalls"><span class="type-signature"></span>getCalls<span class="signature">()</span><span class="type-signature"> &rarr; {Array}</span></h4>
     
     
-    <p class="summary">Gets a list of calls.</p>
+    <p class="summary">Gets a list of calls/conferences.</p>
     
 </dt>
 <dd>
     
     
     <div class="description">
-        <p>Gets a list of calls currently in progress (foreground or background)</p>
+        <p>Gets a list of calls/conferences currently in progress (foreground or background)</p>
     </div>
     
 
@@ -2110,15 +2110,6 @@ phone.formatNumber(&#x27;9234567890&#x27;); &#x2F;&#x2F; 1 (923) 456-7890</pre>
 
 	
 
-	
-	<dt class="important tag-deprecated">Deprecated:</dt>
-	
-	<dd class="yes-def tag-deprecated">
-		<ul class="dummy">
-			<li>Yes</li>
-		</ul>
-	</dd>
-	
 	
 
 	
@@ -2154,7 +2145,15 @@ phone.formatNumber(&#x27;9234567890&#x27;); &#x2F;&#x2F; 1 (923) 456-7890</pre>
     
             
 <div class="param-desc">
-    <p>Array of objects representing current calls</p>
+    <p>Array of objects representing current calls/conferences.
+e.g.</p>
+<p><code>[{
+ index: 0,
+ breed: 'call',
+ type: 'Outgoing'
+ state: 'connected'
+ peer: 'john@domain.com'
+}]</code></p>
 </div>
 
 
@@ -2174,6 +2173,13 @@ phone.formatNumber(&#x27;9234567890&#x27;); &#x2F;&#x2F; 1 (923) 456-7890</pre>
 
         
     
+    
+        <h5>Example</h5>
+        
+    <pre class="sunlight-highlight-javascript">var phone = ATT.rtc.Phone.getPhone();
+var calls = phone.getCalls();</pre>
+
+
     
 </dd>
 
@@ -4554,6 +4560,35 @@ The event is fired with an attached event data of the following format:</p>
 
         <tr>
             
+                <td class="name"><code>index</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last"><p>The ordinal numbering of the call in the list of existing calls.</p></td>
+        </tr>
+
+	
+
+        <tr>
+            
                 <td class="name"><code>to</code></td>
             
 
@@ -4815,6 +4850,35 @@ The event is fired with an attached event data of the following format:</p>
 	</thead>
 
 	<tbody>
+	
+
+        <tr>
+            
+                <td class="name"><code>index</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last"><p>The ordinal numbering of the call in the list of existing calls.</p></td>
+        </tr>
+
 	
 
         <tr>
@@ -5114,6 +5178,35 @@ The event is fired with an attached event data of the following format:</p>
 
         <tr>
             
+                <td class="name"><code>index</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last"><p>The ordinal numbering of the call in the list of existing calls.</p></td>
+        </tr>
+
+	
+
+        <tr>
+            
                 <td class="name"><code>to</code></td>
             
 
@@ -5377,6 +5470,35 @@ The event is fired with an attached event data of the following format:</p>
 
         <tr>
             
+                <td class="name"><code>index</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last"><p>The ordinal numbering of the call in the list of existing calls.</p></td>
+        </tr>
+
+	
+
+        <tr>
+            
                 <td class="name"><code>from</code></td>
             
 
@@ -5634,6 +5756,35 @@ The event is fired with an attached event data of the following format:</p>
 	</thead>
 
 	<tbody>
+	
+
+        <tr>
+            
+                <td class="name"><code>index</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last"><p>The ordinal numbering of the call in the list of existing calls.</p></td>
+        </tr>
+
 	
 
         <tr>
@@ -5900,6 +6051,35 @@ The event is fired with an attached event data of the following format:</p>
 
         <tr>
             
+                <td class="name"><code>index</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last"><p>The ordinal numbering of the call in the list of existing calls.</p></td>
+        </tr>
+
+	
+
+        <tr>
+            
                 <td class="name"><code>to</code></td>
             
 
@@ -6157,6 +6337,29 @@ The event is fired with an attached event data of the following format:</p>
 
         <tr>
             
+                <td class="name"><code>index</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>The ordinal numbering of the call in the list of existing calls.</p></td>
+        </tr>
+
+	
+
+        <tr>
+            
                 <td class="name"><code>from</code></td>
             
 
@@ -6357,6 +6560,35 @@ The event is fired with an attached event data of the following format:</p>
 	</thead>
 
 	<tbody>
+	
+
+        <tr>
+            
+                <td class="name"><code>index</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last"><p>The ordinal numbering of the call in the list of existing calls.</p></td>
+        </tr>
+
 	
 
         <tr>
@@ -6623,6 +6855,35 @@ The event is fired with an attached event data of the following format:</p>
 
         <tr>
             
+                <td class="name"><code>index</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last"><p>The ordinal numbering of the call in the list of existing calls.</p></td>
+        </tr>
+
+	
+
+        <tr>
+            
                 <td class="name"><code>to</code></td>
             
 
@@ -6883,6 +7144,35 @@ The event is fired with an attached event data of the following format:</p>
 	</thead>
 
 	<tbody>
+	
+
+        <tr>
+            
+                <td class="name"><code>index</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last"><p>The ordinal numbering of the call in the list of existing calls.</p></td>
+        </tr>
+
 	
 
         <tr>
@@ -7283,6 +7573,35 @@ The event is fired with an attached event data of the following format:</p>
 
         <tr>
             
+                <td class="name"><code>index</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last"><p>The ordinal numbering of the call in the list of existing calls.</p></td>
+        </tr>
+
+	
+
+        <tr>
+            
                 <td class="name"><code>to</code></td>
             
 
@@ -7540,6 +7859,35 @@ The event is fired with an attached event data of the following format:</p>
 	</thead>
 
 	<tbody>
+	
+
+        <tr>
+            
+                <td class="name"><code>index</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last"><p>The ordinal numbering of the conference in the list of existing conferences.</p></td>
+        </tr>
+
 	
 
         <tr>
@@ -7834,6 +8182,29 @@ The event is fired with an attached event data of the following format:</p>
 
         <tr>
             
+                <td class="name"><code>index</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>The ordinal numbering of the conference in the list of existing conferences.</p></td>
+        </tr>
+
+	
+
+        <tr>
+            
                 <td class="name"><code>mediaType</code></td>
             
 
@@ -8009,6 +8380,29 @@ The event is fired with an attached event data of the following format:</p>
 	</thead>
 
 	<tbody>
+	
+
+        <tr>
+            
+                <td class="name"><code>index</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>The ordinal numbering of the conference in the list of existing conferences.</p></td>
+        </tr>
+
 	
 
         <tr>
@@ -8212,6 +8606,35 @@ The event is fired with an attached event data of the following format:</p>
 	</thead>
 
 	<tbody>
+	
+
+        <tr>
+            
+                <td class="name"><code>index</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last"><p>The ordinal numbering of the conference in the list of existing conferences.</p></td>
+        </tr>
+
 	
 
         <tr>
@@ -8510,6 +8933,35 @@ The event is fired with an attached event data of the following format:</p>
 
         <tr>
             
+                <td class="name"><code>index</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last"><p>The ordinal numbering of the conference in the list of existing conferences.</p></td>
+        </tr>
+
+	
+
+        <tr>
+            
                 <td class="name"><code>from</code></td>
             
 
@@ -8802,6 +9254,35 @@ The event is fired with an attached event data of the following format:</p>
 
         <tr>
             
+                <td class="name"><code>index</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last"><p>The ordinal numbering of the conference in the list of existing conferences.</p></td>
+        </tr>
+
+	
+
+        <tr>
+            
                 <td class="name"><code>invitations</code></td>
             
 
@@ -9063,6 +9544,35 @@ The event is fired with an attached event data of the following format:</p>
 
         <tr>
             
+                <td class="name"><code>index</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last"><p>The ordinal numbering of the conference in the list of existing conferences.</p></td>
+        </tr>
+
+	
+
+        <tr>
+            
                 <td class="name"><code>invitations</code></td>
             
 
@@ -9320,6 +9830,29 @@ The event is fired with an attached event data of the following format:</p>
 
         <tr>
             
+                <td class="name"><code>index</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>The ordinal numbering of the conference in the list of existing conferences.</p></td>
+        </tr>
+
+	
+
+        <tr>
+            
                 <td class="name"><code>from</code></td>
             
 
@@ -9520,6 +10053,35 @@ The event is fired with an attached event data of the following format:</p>
 	</thead>
 
 	<tbody>
+	
+
+        <tr>
+            
+                <td class="name"><code>index</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last"><p>The ordinal numbering of the conference in the list of existing conferences.</p></td>
+        </tr>
+
 	
 
         <tr>
@@ -9784,6 +10346,29 @@ The event is fired with an attached event data of the following format:</p>
 
         <tr>
             
+                <td class="name"><code>index</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>The ordinal numbering of the conference in the list of existing conferences.</p></td>
+        </tr>
+
+	
+
+        <tr>
+            
                 <td class="name"><code>invitee</code></td>
             
 
@@ -9938,6 +10523,35 @@ The event is fired with an attached event data of the following format:</p>
 	</thead>
 
 	<tbody>
+	
+
+        <tr>
+            
+                <td class="name"><code>index</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last"><p>The ordinal numbering of the conference in the list of existing conferences.</p></td>
+        </tr>
+
 	
 
         <tr>
@@ -10202,6 +10816,29 @@ The event is fired with an attached event data of the following format:</p>
 
         <tr>
             
+                <td class="name"><code>index</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>The ordinal numbering of the conference in the list of existing conferences.</p></td>
+        </tr>
+
+	
+
+        <tr>
+            
                 <td class="name"><code>from</code></td>
             
 
@@ -10402,6 +11039,35 @@ The event is fired with an attached event data of the following format:</p>
 	</thead>
 
 	<tbody>
+	
+
+        <tr>
+            
+                <td class="name"><code>index</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last"><p>The ordinal numbering of the conference in the list of existing conferences.</p></td>
+        </tr>
+
 	
 
         <tr>
@@ -10664,6 +11330,35 @@ The event is fired with an attached event data of the following format:</p>
 	</thead>
 
 	<tbody>
+	
+
+        <tr>
+            
+                <td class="name"><code>index</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last"><p>The ordinal numbering of the conference in the list of existing conferences.</p></td>
+        </tr>
+
 	
 
         <tr>
@@ -10996,6 +11691,29 @@ The event is fired with an attached event data of the following format:</p>
 
         <tr>
             
+                <td class="name"><code>index</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>The ordinal numbering of the call in the list of existing calls.</p></td>
+        </tr>
+
+	
+
+        <tr>
+            
                 <td class="name"><code>from</code></td>
             
 
@@ -11195,6 +11913,29 @@ The event is fired with an attached event data of the following format:</p>
 	</thead>
 
 	<tbody>
+	
+
+        <tr>
+            
+                <td class="name"><code>index</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>The ordinal numbering of the call in the list of existing calls.</p></td>
+        </tr>
+
 	
 
         <tr>
@@ -12119,6 +12860,35 @@ The event is fired with an attached event data of the following format:</p>
 
         <tr>
             
+                <td class="name"><code>index</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last"><p>The ordinal numbering of the call in the list of existing calls.</p></td>
+        </tr>
+
+	
+
+        <tr>
+            
                 <td class="name"><code>message</code></td>
             
 
@@ -12410,6 +13180,35 @@ The event is fired with an attached event data of the following format:</p>
 	</thead>
 
 	<tbody>
+	
+
+        <tr>
+            
+                <td class="name"><code>index</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last"><p>The ordinal numbering of the call in the list of existing calls.</p></td>
+        </tr>
+
 	
 
         <tr>
@@ -13436,7 +14235,7 @@ The event is fired with an attached event data of the following format:</p>
 					
 		<span class="jsdoc-message">
 		Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.2</a>
-		on 2015-01-27T13:52:46-08:00 using the <a
+		on 2015-02-06T19:41:34-08:00 using the <a
 			href="https://github.com/terryweiss/docstrap">DocStrap template</a>.
 		</span>
 				</footer>
