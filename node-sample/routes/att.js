@@ -135,11 +135,6 @@ router.get('/callback', function (req, res) {
         res.redirect(default_redirect_uri + '?code=' + auth_code);
       }
 
-      // OR
-      // res.render('main_page');
-      // OR
-      // res.redirect('/login');
-      // now with customized l&f
     });
 
   } else {

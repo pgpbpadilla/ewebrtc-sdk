@@ -7,8 +7,8 @@
 /*jslint browser: true, devel: true, node: true, debug: true, todo: true, indent: 2, maxlen: 150*/
 
 // Make JSLint aware of variables and functions that are defined in other files.
-/*global ATT, unsupportedBrowserError, loadView, checkEnhancedWebRTCSession, loadDefaultView, addCall,
-  onSessionReady, onSessionDisconnected, onAddressUpdated, onError, onWarning,
+/*global ATT, unsupportedBrowserError, checkEnhancedWebRTCSession, loadDefaultView, addCall,
+  onSessionReady, onSessionDisconnected, onSessionExpired, onAddressUpdated, onError, onWarning,
   onDialing, onIncomingCall, onConnecting, onCallConnected, onMediaEstablished, onEarlyMedia,
   onAnswering, onCallMuted, onCallUnmuted, onCallHold, onCallResume,
   onCallDisconnecting, onCallDisconnected, onCallCanceled, onCallRejected,
@@ -168,6 +168,70 @@ phone.on('session:ready', onSessionReady);
 // </pre>
 phone.on('notification', onNotification);
 
+// ### Create Access Token
+// ---------------------------------
+function createAccessToken(appScope, authCode, success, error) {
+//[**ATT.rtc.dhs.createAccessToken**](../../lib/webrtc-sdk/doc/ATT.rtc.dhs.html#createAccessToken)
+// creates an access token that is needed before you can login.
+//
+// - `app_scope` is the type of access token you want to create
+//
+// - `[auth_code]` is authorization code for MOBILE_NUMBER users
+//
+// - `success` is the success callback
+//
+// - `error` is the failure callback
+  ATT.rtc.dhs.createAccessToken({
+    app_scope: appScope,
+    auth_code: authCode,
+    success: success,
+    error: error
+  });
+}
+
+// ### Associate Access Token
+// ---------------------------------
+function associateAccessToken(userId, accessToken, success, error) {
+//[**ATT.rtc.dhs.associateAccessToken**](../../lib/webrtc-sdk/doc/ATT.rtc.html#associateAccessToken)
+// associates an access token to a user id that is needed before you can login.
+//
+// - `userId` is the user id that you want to associate the access token to
+//
+// - `token` is the access token you want to associate
+//
+// - `success` is the success callback
+//
+// - `error` is the failure callback
+  ATT.rtc.associateAccessToken({
+    userId: userId,
+    token: accessToken,
+    success: success,
+    error: error
+  });
+}
+
+// ### Create e911 id
+// ---------------------------------
+function createE911Id(e911Token, address, success, error) {
+//[**ATT.rtc.dhs.createE911Id**](../../lib/webrtc-sdk/doc/ATT.rtc.dhs.html#createE911Id)
+// associates an access token to a user id that is needed before you can login.
+//
+// - `token` is the e911 access token
+//
+// - `address` is the address that you want to create the e911 id for
+//
+// - `success` is the success callback
+//
+// - `error` is the failure callback
+  ATT.rtc.dhs.createE911Id({
+    token: e911Token,
+    address: address,
+    // On successful E911 Id creation
+    success: success,
+    error: error
+  });
+}
+
 // ### Create Enhanced WebRTC Session
 // ---------------------------------
 function loginEnhancedWebRTC(token, e911Id) {
@@ -185,7 +249,7 @@ function loginEnhancedWebRTC(token, e911Id) {
 
 // ### Updating the address
 // ---------------------------------
-function updateAddress(e911Id) {
+function associateE911Id(e911Id) {
 //Given that the user is logged in, you can use the [**phone.associateE911Id**](../../lib/webrtc-sdk/doc/Phone.html#associateE911Id)
 //method to update the user's e911 linked address like:
 
@@ -512,6 +576,22 @@ function resume() {
 // Use the [**phone.move**](../../lib/webrtc-sdk/doc/Phone.html#move) method to move the call to another client.
 // All clients currently logged in with the same Id will receive a call.
 // This method can also be used to move a call to a handheld device.
+
+// ### Register for _call:moved_ event
+// ---------------------------------
+// The `call:moved` event is published after a call has been successfully moved
+//
+// **Callback function example:**
+//
+// <pre>
+// function onCallMoved(data) {
+//   from = data.from;
+//   to = data.to;
+//   timestamp = data.timestamp;
+// }
+// </pre>
+phone.on('call:moved', onCallMoved);
+
 function move() {
   // The other devices will start ringing, i.e., the [**Phone**](../../lib/webrtc-sdk/doc/Phone.html) object in the other
   // clients will emit a [**call:incoming**](../../lib/webrtc-sdk/doc/Phone.html#event:call:incoming).
@@ -835,4 +915,20 @@ function cleanPhoneNumber(phoneNum) {
   // `+1 (123) 123 1234` to `11231231234`,
   // and `1800CALFEDX` to `18002253339`.
   return phone.cleanPhoneNumber(phoneNum);
+}
+
+// ## parsing caller info
+// ---------------------------------
+function getCallerInfo(callerUri) {
+
+  // In order to get the caller information like protocol, caller-id and domain we can use
+  // the [**phone.getCallerInfo**](../../lib/webrtc-sdk/doc/Phone.html#getCallerInfo) method,
+  // it will convert callerUri like
+  // `sip:+1111@icmn.api.att.com` to an object like
+  // `{
+  //    protocol: 'sip',
+  //    callerId: '+1111',
+  //    domain: 'icmn.api.att.com'
+  // }`.
+  return phone.getCallerInfo(callerUri);
 }

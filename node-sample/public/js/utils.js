@@ -1,7 +1,8 @@
 /*jslint browser: true, devel: true, node: true, debug: true, todo: true, indent: 2, maxlen: 150*/
 /*global ATT, RESTClient, console, log, phone, holder, eWebRTCDomain,
-  sessionData, defaultHeaders, deleteSession, onError,
-  getAccessToken, hideParticipants, showParticipants, loginEnhancedWebRTC*/
+  sessionData, defaultHeaders, onError, getCallerInfo,
+  loginMobileNumber, createAccessToken, associateAccessToken, createE911Id,
+  loginEnhancedWebRTC, hideParticipants, showParticipants*/
 
 'use strict';
 
@@ -38,7 +39,7 @@ function ajaxRequest(args) {
     data: args.data,
     headers : args.headers || defaultHeaders,
     success : args.success,
-    error: args.error
+    error: args.error || onError
   });
   rc.ajax();
 }
@@ -161,17 +162,8 @@ function createView(view, data, response) {
   var viewDiv,
     div,
     message,
-    profile,
-    userName,
-    userId,
-    updateAddressDiv,
-    userType,
-    virtualNumberPara,
-    virtualNumber,
-    accountIdPara,
-    accountId,
+    username,
     updateAddress,
-    deleteProfile,
     logout;
 
   viewDiv = document.getElementById('view');
@@ -187,112 +179,39 @@ function createView(view, data, response) {
 
   // message
   message = document.getElementById("message");
-  // profile
-  profile = document.getElementById("profile");
-  // name
-  userName = document.getElementById("user_name");
-  // userid
-  userId = document.getElementById("user_id");
-  // type
-  userType = document.getElementById("user_type");
-  // virtual number
-  virtualNumberPara = document.getElementById('virtual_number_para');
-  virtualNumber = document.getElementById("virtual_number");
-  // type
-  accountIdPara = document.getElementById('account_id_para');
-  accountId = document.getElementById("account_id");
-  // delete
-  deleteProfile = document.getElementById("delete");
-  // updateAddress
+  // username
+  username = document.getElementById("username");
+  // update_address
   updateAddress = document.getElementById("update_address");
   // logout
   logout = document.getElementById("logout");
-  // address div for update address
-  updateAddressDiv =  document.getElementById("address-box");
 
   switch (view) {
   case 'home':
     setupHomeView();
 
-    if (profile && data.user_name) {
-      profile.style.display = 'block';
-      profile.innerHTML = data.user_name;
+    if (username && data.user_name) {
+      username.innerHTML = data.user_name;
+      username.style.display = 'block';
     }
-
-    if (updateAddress) {
+    if (updateAddress && data.user_type !== 'ACCOUNT_ID') {
       updateAddress.style.display = 'block';
     }
     if (logout) {
       logout.style.display = 'block';
     }
     break;
-  case 'profile':
-    if (data) {
-      if (profile && data.user_name) {
-        profile.style.display = 'block';
-        profile.innerHTML = data.user_name;
-      }
-
-      if (userName && data.user_name) {
-        userName.innerHTML = data.user_name;
-      }
-
-      if (userId && data.user_id) {
-        userId.innerHTML = data.user_id;
-      }
-
-      if (userType && data.user_type) {
-        userType.innerHTML = data.user_type;
-      }
-
-      if (virtualNumber && data.virtual_number) {
-        virtualNumberPara.style.display = 'block';
-        virtualNumber.innerHTML = data.virtual_number;
-        if (accountIdPara) {
-          accountIdPara.style.display = 'none';
-        }
-      }
-
-      if (accountId && data.account_id) {
-        accountIdPara.style.display = 'block';
-        accountId.innerHTML = data.account_id;
-        if (virtualNumberPara) {
-          virtualNumberPara.style.display = 'none';
-        }
-      }
-
-      if (deleteProfile) {
-        deleteProfile.style.display = 'block';
-      }
-
-      if (sessionData) {
-        if (updateAddress) {
-          updateAddress.style.display = 'block';
-        }
-      }
-
-      if (logout) {
-        logout.style.display = 'block';
-      }
+  case 'login':
+    if (username) {
+      username.innerHTML = "Guest";
+      username.style.display = 'none';
     }
-    break;
-  case 'logout':
-    if (profile) {
-      profile.innerHTML = "Guest";
-      profile.style.display = 'none';
-    }
-
     if (updateAddress) {
       updateAddress.style.display = 'none';
-    }
-
-    if (updateAddressDiv) {
-      updateAddressDiv.style.display = 'none';
     }
     if (logout) {
       logout.style.display = 'none';
     }
-
     if (message && data && data.message) {
       message.innerHTML = data.message;
     }
@@ -300,13 +219,29 @@ function createView(view, data, response) {
   }
 }
 
-function loadView(view, data) {
+function loadView(view, success) {
   log('Loading ' + view + ' page');
 
   // The ajaxRequest method takes url and the callback to be called on success error
   ajaxRequest({
     url: 'views/' + view + '.html',
-    success: createView.bind(this, view, data)
+    success: success
+  });
+}
+
+function loadAndCreateView(view, data) {
+  loadView(view, createView.bind(this, view, data));
+}
+
+function loadVirtualNumbers(callback) {
+  log('Getting virtual number pool');
+
+  ajaxRequest({
+    url: 'dhs/vtnpool',
+    success: function (response) {
+      sessionData.vtnPool = response.getJson();
+      callback();
+    }
   });
 }
 
@@ -324,19 +259,23 @@ function switchView(view, data) {
     }
     if (data) {
       if (!data.sessionId) {
-        deleteSession(function (data) {
-          data.message = '';
-          switchView('logout', data);
-        });
+        data.message = '';
+        switchView('logout', data);
         return;
       }
-      loadView(view, data);
+      loadAndCreateView(view, data);
       return;
     }
-    loadView('logout');
+    loadAndCreateView('logout');
     return;
   }
-  loadView(view, data);
+  loadAndCreateView(view, data);
+}
+
+function switchToLoginView(data) {
+  loadVirtualNumbers(function () {
+    switchView('login', data);
+  });
 }
 
 // ### loads the default view into the landing page
@@ -353,13 +292,173 @@ function loadDefaultView() {
       args = url.slice(url.indexOf('?userConsentResult=') + 19);
     }
     if (args) {
-      getAccessToken(args);
+      loginMobileNumber(args);
     } else {
-      switchView('logout');
+      switchToLoginView({
+        message: 'Please login to start making calls !!!'
+      });
     }
   } catch (err) {
     onError(err);
   }
+}
+
+function getE911Id(address, success, error) {
+  createAccessToken('E911',
+    null,
+    function (data) {
+      createE911Id(data.access_token, address, success, error);
+    },
+    error);
+}
+
+//Callback function which invokes SDK login method once access token is created/associated
+function accessTokenSuccess(data) {
+  try {
+    if (!data) {
+      throw 'No create token response data received';
+    }
+
+    log(JSON.stringify(data));
+
+    if (data.user_type === 'MOBILE_NUMBER' ||
+        data.user_type === 'VIRTUAL_NUMBER') {
+      switchView('address');
+    } else { // Account ID
+      // if no error after login to dhs, create web rtc session
+      loginEnhancedWebRTC(data.access_token);
+    }
+  } catch (err) {
+    onError(err);
+  }
+}
+
+function login(userType, authCode, userName) {
+  createAccessToken(userType,
+    authCode,
+    function (data) {
+      data.user_type = userType;
+
+      if (userType !== 'MOBILE_NUMBER') { // VIRTUAL_NUMBER and ACCOUNT_ID
+        data.user_name = userType === 'VIRTUAL_NUMBER' ? userName : userName + '@' + eWebRTCDomain;
+
+        ATT.utils.extend(sessionData, data); // save token/user data locally
+
+        if (userType === 'VIRTUAL_NUMBER' &&
+            userName.length === 11 &&
+            userName.charAt(0).localeCompare('1') === 0) {
+          userName = userName.substr(1);
+        }
+
+        userName = (userType === 'VIRTUAL_NUMBER') ? ('vtn:' + userName) : userName;
+
+        associateAccessToken(userName,
+          data.access_token,
+          accessTokenSuccess.bind(null, data),
+          onError);
+
+      } else { // MOBILE_NUMBER
+        ATT.utils.extend(sessionData, data); // save token/user data locally
+        accessTokenSuccess.call(null, data);
+      }
+    },
+    onError);
+}
+
+function loginMobileNumber(args) {
+  args = JSON.parse(decodeURI(args));
+
+  if (!args || !args.code) {
+    throw new Error('Failed to retrieve the user consent code.');
+  }
+
+  if (args.error) {
+    throw args.error;
+  }
+
+  login('MOBILE_NUMBER', args.code);
+}
+
+function loginVirtualNumberOrAccountIdUser(event, form, userType) {
+  if (event) {
+    event.preventDefault();
+  }
+
+  var username;
+
+  username = form.username.value;
+
+  try {
+    if (!username) {
+      throw new Error('User name is required in to login a ' + userType + ' user');
+    }
+
+    login(userType, null, username);
+
+  } catch (err) {
+    onError(err);
+  }
+}
+
+function validateAddress(form) {
+  if (!form) {
+    return;
+  }
+
+  var i,
+    e,
+    address = {
+    },
+    addressFormat = {
+      'first_name': {
+        display: 'First Name',
+        required: true
+      },
+      'last_name' : {
+        display: 'Last Name',
+        required: true
+      },
+      'house_number': {
+        display: 'House Number',
+        required: true
+      },
+      'street': {
+        display: 'Street',
+        required: true
+      },
+      'unit': {
+        display: 'Unit/Apt/Suite',
+        required: false
+      },
+      'city': {
+        display: 'City',
+        required: true
+      },
+      'state': {
+        display: 'State',
+        required: true
+      },
+      'zip': {
+        display: 'Zip Code',
+        required: true
+      }
+    };
+
+  // Gather all the fields from the address form.
+  for (i = 0; i < form.elements.length; i = i + 1) {
+    e = form.elements[i];
+    if (e.type !== 'button' && e.type !== 'submit') {
+      if (addressFormat.hasOwnProperty(e.name)) {
+        if (addressFormat[e.name].required === true && !e.value) {
+          throw addressFormat[e.name].display + ' is a required field';
+        }
+        address[e.name] = e.value;
+      } else if (e.type === 'checkbox') {
+        address[e.name] = (e.checked).toString();
+      }
+    }
+  }
+  return address;
 }
 
 function resetUI() {
@@ -435,10 +534,12 @@ function onNotification(data) {
 }
 
 function onSessionDisconnected() {
-  setMessage('WebRTC session has ended');
+  setMessage('Your enhanced WebRTC session has ended');
 }
 function onSessionExpired() {
-  setMessage('WebRtc session is deleted or expired');
+  switchView('login', {
+    message: 'Your enhanced WebRTC session has expired. Please login again'
+  });
 }
 
 function checkEnhancedWebRTCSession() {
@@ -447,15 +548,18 @@ function checkEnhancedWebRTCSession() {
 
 function onIncomingCall(data) {
   var from,
+    callerInfo,
     answerBtn,
     rejectBtn,
     endAnswerBtn,
     holdAnswerBtn;
 
-  if (isNaN(data.from)) {
-    from = data.from;
+  callerInfo = getCallerInfo(data.from);
+
+  if (callerInfo.callerId.indexOf('@') > -1) {
+    from = callerInfo.callerId;
   } else {
-    from = phone.formatNumber(data.from);
+    from = phone.formatNumber(callerInfo.callerId);
   }
 
   if (phone.isCallInProgress()) {
@@ -484,13 +588,16 @@ function onIncomingCall(data) {
 
 function onConferenceInvite(data) {
   var from,
+    callerInfo,
     answerBtn,
     rejectBtn;
 
-  if (isNaN(data.from)) {
-    from = data.from;
+  callerInfo = getCallerInfo(data.from);
+
+  if (callerInfo.callerId.indexOf('@') > -1) {
+    from = callerInfo.callerId;
   } else {
-    from = phone.formatNumber(data.from);
+    from = phone.formatNumber(callerInfo.callerId);
   }
 
   answerBtn = '<button type="button" id="answer-button" class="btn btn-success btn-sm" onclick="join()">'
@@ -506,16 +613,16 @@ function onConferenceInvite(data) {
 
 // Timestamp and the 'to' parameter is passed
 function onDialing(data) {
-  var to, cancelBtn;
+  var to,
+    callerInfo,
+    cancelBtn;
 
-  if (isNaN(data.to)) {
-    to = data.to;
+  callerInfo = getCallerInfo(data.to);
+
+  if (callerInfo.callerId.indexOf('@') > -1) {
+    to = callerInfo.callerId;
   } else {
-    to = phone.formatNumber(data.to);
-  }
-
-  if (to.indexOf('@') > 0) {
-    to = to.split('@')[0];
+    to = phone.formatNumber(callerInfo.callerId);
   }
 
   cancelBtn = '<button type="button" id="cancel-button" '
@@ -548,7 +655,9 @@ function onParticipantRemoved() {
 
 // This event callback gets invoked when an outgoing call flow is initiated and the call state is changed to connecting state
 function onConnecting(data) {
-  var peer, cancelBtn;
+  var peer,
+    callerInfo,
+    cancelBtn;
 
   if (undefined !== data.from) {
     peer = data.from;
@@ -556,12 +665,12 @@ function onConnecting(data) {
     peer = data.to;
   }
 
-  if (!isNaN(peer)) {
-    peer = phone.formatNumber(peer);
-  }
+  callerInfo = getCallerInfo(peer);
 
-  if (peer.indexOf('@') > 0) {
-    peer = peer.split('@')[0];
+  if (callerInfo.callerId.indexOf('@') > -1) {
+    peer = callerInfo.callerId;
+  } else {
+    peer = phone.formatNumber(callerInfo.callerId);
   }
 
   if (undefined !== data.to) {
@@ -583,10 +692,17 @@ function onCallRingbackProvided() {
 }
 
 function onCallConnected(data) {
-  var peer = data.from || data.to;
+  var peer,
+    callerInfo;
 
-  if (!isNaN(peer)) {
-    peer = phone.formatNumber(peer);
+  peer = data.from || data.to;
+
+  callerInfo = getCallerInfo(peer);
+
+  if (callerInfo.callerId.indexOf('@') > -1) {
+    peer = callerInfo.callerId;
+  } else {
+    peer = phone.formatNumber(callerInfo.callerId);
   }
 
   setMessage('<h6>Connected to call ' + (data.from ? 'from ' : 'to ') + peer +
@@ -637,12 +753,15 @@ function onMediaEstablished() {
 }
 
 function onAnswering(data) {
-  var from;
+  var from,
+    callerInfo;
 
-  if (isNaN(data.from)) {
-    from = data.from;
+  callerInfo = getCallerInfo(from);
+
+  if (callerInfo.callerId.indexOf('@') > -1) {
+    from = callerInfo.callerId;
   } else {
-    from = phone.formatNumber(data.from);
+    from = phone.formatNumber(callerInfo.callerId);
   }
 
   setMessage('<h6>Answering: ' + from +
@@ -653,12 +772,15 @@ function onAnswering(data) {
 }
 
 function onJoiningConference(data) {
-  var from;
+  var from,
+    callerInfo;
 
-  if (isNaN(data.from)) {
-    from = data.from;
+  callerInfo = getCallerInfo(from);
+
+  if (callerInfo.callerId.indexOf('@') > -1) {
+    from = callerInfo.callerId;
   } else {
-    from = phone.formatNumber(data.from);
+    from = phone.formatNumber(callerInfo.callerId);
   }
 
   setMessage('<h6>Joining conference initiated by: ' + from +
@@ -713,17 +835,24 @@ function onConferenceDisconnecting(data) {
   setMessage('Disconnecting conference. Time: ' + data.timestamp);
 }
 
+function onCallMoved(data) {
+  setMessage('Call Moved Successfully. Time: ' + data.timestamp);
+}
+
 function onTransferring(data) {
-  setMessage('Call Transfer Initiated Successfully' + '.' + ' Time: ' + data.timestamp);
+  setMessage('Call Transfer Initiated Successfully. Time: ' + data.timestamp);
 }
 
 function onTransferred(data) {
-  setMessage('Call Transfer Successfully' + '.' + ' Time: ' + data.timestamp);
+  setMessage('Call Transfer Successfully. Time: ' + data.timestamp);
 }
 
 function onCallDisconnected(data) {
+  var peer,
+    callerInfo,
+    allCalls;
 
-  var peer = data.from || data.to, allCalls;
+  peer = data.from || data.to;
 
   buttons = {
     hangup: document.getElementById('btn-hangup'),
@@ -731,8 +860,12 @@ function onCallDisconnected(data) {
     switch: document.getElementById('btn-switch')
   };
 
-  if (!isNaN(peer)) {
-    peer = phone.formatNumber(peer);
+  callerInfo = getCallerInfo(peer);
+
+  if (callerInfo.callerId.indexOf('@') > -1) {
+    peer = callerInfo.callerId;
+  } else {
+    peer = phone.formatNumber(callerInfo.callerId);
   }
 
   setMessage('Call ' + (data.from ? ('from ' + peer) : ('to '  + peer)) + ' disconnected' +
@@ -740,6 +873,7 @@ function onCallDisconnected(data) {
   resetUI();
 
   allCalls = phone.getCalls();
+
   if (1 === allCalls.length && 'held' === allCalls[0].state) {
     buttons.hangup.disabled = false;
     buttons.resume.disabled = false;
@@ -758,10 +892,18 @@ function onConferenceEnded(data) {
 }
 
 function onCallCanceled(data) {
-  var peer = data.from || data.to, allCalls;
+  var peer,
+    callerInfo,
+    allCalls;
 
-  if (!isNaN(peer)) {
-    peer = phone.formatNumber(peer);
+  peer = data.from || data.to;
+
+  callerInfo = getCallerInfo(peer);
+
+  if (callerInfo.callerId.indexOf('@') > -1) {
+    peer = callerInfo.callerId;
+  } else {
+    peer = phone.formatNumber(callerInfo.callerId);
   }
 
   setMessage('Call ' + (data.from ? ('from ' + peer) : ('to '  + peer)) + ' canceled.' + ' Time: ' + data.timestamp);
@@ -778,10 +920,17 @@ function onCallCanceled(data) {
 }
 
 function onCallRejected(data) {
-  var peer = data.from || data.to;
+  var peer,
+    callerInfo;
 
-  if (!isNaN(peer)) {
-    peer = phone.formatNumber(peer);
+  peer = data.from || data.to;
+
+  callerInfo = getCallerInfo(peer);
+
+  if (callerInfo.callerId.indexOf('@') > -1) {
+    peer = callerInfo.callerId;
+  } else {
+    peer = phone.formatNumber(callerInfo.callerId);
   }
 
   setMessage('Call ' + (data.from ? ('from ' + peer) : ('to '  + peer)) + ' rejected.' + ' Time: ' + data.timestamp);
@@ -792,28 +941,6 @@ function onCallRejected(data) {
 function onAddressUpdated() {
   document.getElementById("address-box").style.display = 'none';
   setMessage('Updated E911 address successfully');
-}
-
-//Callback function which invokes SDK login method once the user successfully logged into DHS
-function loginSuccessCallback(data) {
-  try {
-    if (!data) {
-      throw 'No login response data received';
-    }
-
-    log(JSON.stringify(data));
-
-    ATT.utils.extend(sessionData, data); // store user data and token for Virtual Number/Account ID
-
-    if (data.user_type === 'VIRTUAL_NUMBER') {// Virtual Number response
-      switchView('address');
-    } else { // Account ID response
-      // if no error after login to dhs, create web rtc session
-      loginEnhancedWebRTC(sessionData.access_token);
-    }
-  } catch (err) {
-    onError(err);
-  }
 }
 
 // Checks if the passed email address is valid
@@ -835,21 +962,6 @@ function cleanupCallee(callee) {
 
   return phone.cleanPhoneNumber(callee);
 }
-
-function appendDomainToAccountIDCallee(callee) {
-  // check if it's a number or has a domain
-  if (undefined === callee) {
-    return callee;
-  }
-  if (!isNaN(callee)) {
-    return ATT.phoneNumber.translate(callee.replace(/ /g, ''));
-  }
-  if (isValidEmail(callee)) {
-    return callee;
-  }
-  return callee + '@' + eWebRTCDomain;
-}
-
 
 function cleanupNumber() {
   var callee = document.forms.callForm.callee.value,

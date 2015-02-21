@@ -21,13 +21,13 @@
         <div class="container-fluid">
           <div class="navbar-header">
             <ul class="nav navbar-nav col-sm-offset-1">
-              <li><a class="pointer" id='nav_home' onclick="switchView('home')">ATT Enhanced WebRTC</a></li>
-              <li><a href="tutorial/" target="_blank" class="pointer" id='nav_tutorial'>Tutorial</a></li>
-              <li><a href="api-docs/" target="_blank" class="pointer" id='nav_apidocs'>API Docs</a></li>
-              <li><a href="recipes/" target="_blank" class="pointer" id='nav_recipes'>Recipes</a></li>
-              <li><a class="pointer" id="nav_profile" onclick="switchView('profile');"><span id="profile" style="display: none">Guest</span></a></li>
-              <li><a class="pointer" id="nav_e911Id" onclick="showAddressView();"><span id="update_address" style="display: none">Update E911 Address</span></a></li>
-              <li><a class="pointer" id='nav_logout' onclick="logout();"><span id="logout" style="display: none">Logout</span></a></li>
+              <li><a>ATT Enhanced WebRTC</a></li>
+              <li><a class="pointer" href="tutorial/" target="_blank">Tutorial</a></li>
+              <li><a class="pointer" href="api-docs/" target="_blank">API Docs</a></li>
+              <li><a class="pointer" href="recipes/" target="_blank">Recipes</a></li>
+              <li><a><span id="username" style="display: none">Guest</span></a></li>
+              <li><a class="pointer" id="update_address" style="display: none" onclick="updateAddress(event);"><span>Update E911 Address</span></a></li>
+              <li><a class="pointer" id="logout" style="display: none" onclick="logout();"><span>Logout</span></a></li>
             </ul>
           </div>
         </div>

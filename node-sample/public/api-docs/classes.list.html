@@ -104,6 +104,10 @@
 						</li>
 						
 						<li>
+							<a href="Phone.html#event:call:moved">Phone#call:moved</a>
+						</li>
+						
+						<li>
 							<a href="Phone.html#event:call:muted">Phone#call:muted</a>
 						</li>
 						
@@ -2291,6 +2295,299 @@ The event is fired with an attached event data of the following format:</p>
             
             </td>
 
+            
+
+            
+
+            <td class="description last"><p>Event fire time.</p></td>
+        </tr>
+
+	
+	</tbody>
+</table>
+</dl>
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+
+	
+
+	
+
+	
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="event:call:moved">call:moved</h4>
+    
+    
+    <p class="summary">Call moved event fires when a user wants to move the ongoing call to another browser
+or a mobile device where the user is logged in.</p>
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>The user has to be logged in on atleast two devices or browsers to be able to receive this event.
+There should be a established outgoing or incoming call and move method should be invoked in
+order to be able to receive this event.
+The event is fired with an attached event data of the following format:</p>
+    </div>
+    
+
+    
+        <h5>Type:</h5>
+        <ul>
+            <li>
+                
+<span class="param-type">Object</span>
+
+
+            </li>
+        </ul>
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+	
+
+	<h5 class="subsection-title">Properties:</h5>
+
+	<dl>
+
+<table class="props table table-striped">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+
+		<th>Type</th>
+
+		
+		<th>Argument</th>
+		
+
+		
+
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+
+	<tbody>
+	
+
+        <tr>
+            
+                <td class="name"><code>index</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last"><p>The ordinal numbering of the call in the list of existing calls.</p></td>
+        </tr>
+
+	
+
+        <tr>
+            
+                <td class="name"><code>to</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last"><p>The phone number/id of the called party.</p></td>
+        </tr>
+
+	
+
+        <tr>
+            
+                <td class="name"><code>from</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last"><p>The phone number/id of the calling party.</p></td>
+        </tr>
+
+	
+
+        <tr>
+            
+                <td class="name"><code>mediaType</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last"><p>The media type of the call (audio/video).</p></td>
+        </tr>
+
+	
+
+        <tr>
+            
+                <td class="name"><code>codec</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last"><p>The CODECs associated with the call.</p></td>
+        </tr>
+
+	
+
+        <tr>
+            
+                <td class="name"><code>timestamp</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Date</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+                </td>
             
 
             
@@ -10085,7 +10382,7 @@ The event is fired with an attached event data of the following format:</p>
 					
 		<span class="jsdoc-message">
 		Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.2</a>
-		on 2015-02-06T19:41:34-08:00 using the <a
+		on 2015-02-20T21:19:34-08:00 using the <a
 			href="https://github.com/terryweiss/docstrap">DocStrap template</a>.
 		</span>
 				</footer>

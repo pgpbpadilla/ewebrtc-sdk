@@ -62,19 +62,6 @@
  *
  * You can use the file ./routes/att.js as-is out-of-the-box.
  *
- *---------------------------------------------
- * 3) Other functional routes in your web-tier
- *---------------------------------------------
- * To help you jump start, this Sample App also provides
- * quick-n-dirty implementations of User Login/Logout,
- * User Management, User Administration and Virtual Number Dispensing
- * features.
- *
- * You can write your own code or use your existing Web App
- * for this functionality.
- *
- * WebRTC core is not dependent on these functions.
- *
  *---------------------------------------------------------
  * @author Raj Sesetti, AT&T Developer Program, DRT/LTA
  *---------------------------------------------------------
@@ -141,42 +128,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 // ---------------------------------------------
 // END: Boiler-plate Express app set-up
 // ---------------------------------------------
-
-
-// ---------------------------------------------
-// BEGIN: Functional stuff for Sample App
-// ---------------------------------------------
-//
-// NOTE that there is nothing special here for
-// AT&T WebRTC. This is your usual code for:
-//
-// Home/Login/Logout
-// User Management
-// Administration
-//
-// We provided these just to jump start your
-// Sample App.
-// ---------------------------------------------
-
-// Home/Login/Logout routes
-//
-var index = require('./routes/index');
-app.use( '/', index );
-
-// User Management routes
-//
-var users = require('./routes/users');
-app.use( '/users', users );
-
-// Admin Functions routes
-//
-var admin = require('./routes/admin');
-app.use( '/admin', admin );
-
-// ---------------------------------------------
-// END: Functional stuff
-// ---------------------------------------------
-
 
 // ---------------------------------------------
 // BEGIN: CUSTOM CODE for WebRTC functionality
@@ -245,11 +196,9 @@ if( dhs_https_host ) {
   //
   // It injects that info to whoever needs
   // it. In this case, /att route needs it
-  // for authorize function. users route 
-  // needs it for Virtual Number disbursement.
+  // for authorize function.
   //
-  dhs.initialize( dhs_https_host, dhs_https_port, att, users );
-  users.registerIndexRoute( index );
+  dhs.initialize( dhs_https_host, dhs_https_port, att);
 
 } else {
 

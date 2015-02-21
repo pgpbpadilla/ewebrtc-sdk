@@ -55,7 +55,7 @@ var full_dhs_config = {};
  * @api public
  */
 
-router.initialize = function (dhs_https_host, dhs_https_port, attRoute, usersRoute) {
+router.initialize = function (dhs_https_host, dhs_https_port, attRoute) {
 
   console.log('>> Entering router dhs.initialize');
 
@@ -93,7 +93,7 @@ router.initialize = function (dhs_https_host, dhs_https_port, attRoute, usersRou
 
     });
 
-    dhsResp.on('end', function (respError) {
+    dhsResp.on('end', function () {
 
       console.info('>> dhsResp.on(\'end\')');
 
@@ -124,43 +124,6 @@ router.initialize = function (dhs_https_host, dhs_https_port, attRoute, usersRou
       // for making 'authorize' calls to AT&T OAuth API
       //
       attRoute.initDHSConfig(full_dhs_config);
-
-      // Don't have to wait for this to complete
-      // before you send the response back to client
-      //
-
-      // Initialize our virtual number pool and write it to
-      // to our file database.
-      //
-      var virtualNumbers = {};
-      full_dhs_config.virtual_numbers_pool.forEach(function (elem) {
-        virtualNumbers[elem] = null;
-      });
-
-      fs.writeFile(VIRTUAL_NUMBERS_FILE, JSON.stringify(virtualNumbers), function (writeError) {
-        if (writeError) {
-          console.log('Failure. Writing to virtual number file database');
-          console.error(writeError);
-        } else {
-          console.log('-------------------------------------------');
-          console.log('Virtual Number List: %j', virtualNumbers);
-          console.log('-------------------------------------------');
-          console.log('Success. Virtual Number file database initialized with');
-          console.log('info retrieved from DHS. These Virtual Numbers will be');
-          console.log('automatically assigned one-by-one as your');
-          console.log('end users sign up with this Web Application');
-          console.log('-------------------------------------------');
-
-          // Give Virtual Numbers to users route
-          //
-          usersRoute.initVirtualNumbersInfo(VIRTUAL_NUMBERS_FILE, virtualNumbers);
-        }
-      });
-
-      // Initialize users route with Enhance WebRTC domain
-      // name retrieved from DHS configuration
-      //
-      usersRoute.initEWebRTCDomain(full_dhs_config.ewebrtc_domain);
 
     });
 
@@ -194,8 +157,13 @@ router.initialize = function (dhs_https_host, dhs_https_port, attRoute, usersRou
  */
 
 router.get('/', function (req, res) {
-  console.log('Got authorize request');
+  console.log('Get /dhs request');
   res.send(visible_dhs_config);
+});
+
+router.get('/vtnpool', function (req, res) {
+  console.log('Get /vtnpool request');
+  res.send(full_dhs_config.virtual_numbers_pool);
 });
 
 module.exports = router;

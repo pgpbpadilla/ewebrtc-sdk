@@ -1,8 +1,9 @@
 /*jslint browser: true, devel: true, node: true, debug: true, todo: true, indent: 2, maxlen: 150*/
-/*global ATT, console, log, phone, ajaxRequest, setMessage, clearMessage, clearError, switchView, resetUI,
-  updateAddress, loginEnhancedWebRTC, loginSuccessCallback, onError, clearSessionData, phoneLogout,
-  appendDomainToAccountIDCallee, dialCall, answer, answer2ndCall, hold, resume, startConference,
-  joinConference, addParticipants, getParticipants, removeParticipant, move, switchCall, cleanPhoneNumber*/
+/*global ATT, console, log, phone, clearMessage, clearError, switchToLoginView, resetUI,
+  validateAddress, associateE911Id, getE911Id, loginVirtualNumberOrAccountIdUser, loginEnhancedWebRTC,
+  onError, clearSessionData, phoneLogout, loadView, dialCall, answer, answer2ndCall,
+  hold, resume, startConference, joinConference, addParticipants,
+  getParticipants, removeParticipant, move, switchCall, cleanPhoneNumber*/
 
 'use strict';
 
@@ -10,394 +11,175 @@ var sessionData = {},
   participantsVisible = false,
   holder;
 
-// Register a new user (Account ID/Virtual Number) on DHS
-function register(event) {
-// ### Register new Virtual Number and Account ID users
-// ---------------------------------
-  if (event) {
-    event.preventDefault();
-  }
-  var i,
-    key,
-    form = document.getElementById("registerForm"),
-    data = {},
-    dataFormat = {
-      user_name : {
-        display: 'Name',
-        required: true
-      },
-      user_id : {
-        display: 'User Id',
-        required: true
-      },
-      user_type : {
-        display: 'User Type',
-        required: true
-      },
-      password : {
-        display: 'Password',
-        required: true
-      },
-      confpassword: {
-        display: 'Confirm Password',
-        required: true
-      }
-    };
-
-  if (!form) {
-    return;
-  }
-
-  clearError();
-
-  // validates the user inputs
-  try {
-    for (key in dataFormat) {
-      if (dataFormat.hasOwnProperty(key)) {
-        if (dataFormat[key].required) {
-          if (undefined === form[key]) {
-            throw dataFormat[key].display + ' is missing from the form';
-          }
-        }
-        if (undefined !== form[key].length) {
-          data[key] = null;
-          for (i = 0; i < form[key].length; i = i + 1) {
-            if (form[key][i].checked) {
-              data[key] = form[key][i].value;
-              break;
-            }
-          }
-          if (!data[key]) {
-            throw dataFormat[key].display + ' is a required field';
-          }
-        } else {
-          if (!form[key].value) {
-            throw dataFormat[key].display + ' is a required field';
-          }
-          data[key] = form[key].value;
-        }
-      }
-    }
-
-    if (data.password !== data.confpassword) {
-      throw 'The passwords do not match';
-    }
-
-    delete data.confpassword;
-    // ## On success, switches the view to login
-    // ---------------------------------
-    ajaxRequest({
-      url: '/users',
-      method: 'POST',
-      data: data,
-      success: function (response) {
-        var user = response.getJson();
-        switchView('login');
-        setMessage('User ' + user.user_id + ' created successfully. Please login.');
-      },
-      //On error, error callback is called
-      error: onError
-    });
-  } catch (err) {
-    onError(err);
-  }
-}
-
-// ## Creating an e911 id for Mobile Number/Virtual Number users
-// --------------
-function setAddress(event) {
+function createE911AddressId(event, form) {
   event.preventDefault();
 
   clearError();
 
   if (!sessionData.access_token) {
-    switchView('logout');
-    onError('No access token available to login to Enhanced WebRTC. Please login first to get an access token');
+    switchToLoginView('login');
+    onError('No access token available to login to Enhanced WebRTC. Please create an access token first');
     return;
   }
 
-  var form = document.getElementById("addressForm"),
-    i,
-    e,
-    address = {
-    },
-    addressFormat = {
-      'first_name': {
-        display: 'First Name',
-        required: true
-      },
-      'last_name' : {
-        display: 'Last Name',
-        required: true
-      },
-      'house_number': {
-        display: 'House Number',
-        required: true
-      },
-      'street': {
-        display: 'Street',
-        required: true
-      },
-      'unit': {
-        display: 'Unit/Apt/Suite',
-        required: false
-      },
-      'city': {
-        display: 'City',
-        required: true
-      },
-      'state': {
-        display: 'State',
-        required: true
-      },
-      'zip': {
-        display: 'Zip Code',
-        required: true
-      }
-    };
-
   try {
-    if (!form) {
-      return;
-    }
+    var address = validateAddress(form);
 
-    // Gather all the fields from the address form.
-    for (i = 0; i < form.elements.length; i = i + 1) {
-      e = form.elements[i];
-      if (e.type !== 'button' && e.type !== 'submit') {
-        if (addressFormat.hasOwnProperty(e.name)) {
-          if (addressFormat[e.name].required === true && !e.value) {
-            throw addressFormat[e.name].display + ' is a required field';
-          }
-          address[e.name] = e.value;
-        } else if (e.type === 'checkbox') {
-          address[e.name] = (e.checked).toString();
-        }
-      }
-    }
-
-    ATT.rtc.dhs.createAccessToken({
-      app_scope: 'E911',
-      success: function (data) {
-
-        ATT.rtc.dhs.createE911Id({
-          token: data.access_token,
-          address: address,
-          // On successful E911 Id creation
-          success: function (e911Id) {
-            // If already logged in to Enhanced WebRTC
-            if (sessionData.sessionId) {
-              updateAddress(e911Id.e911Locations.addressIdentifier);
-            } else {
-              // try to create a Enhanced WebRTC session otherwise.
-              loginEnhancedWebRTC(sessionData.access_token, e911Id);
-            }
-          },
-          error: onError
-        });
+    getE911Id(address,
+      function (e911Id) {
+        loginEnhancedWebRTC(sessionData.access_token, e911Id);
       },
-      error: onError
-    });
+      onError);
+
   } catch (err) {
     onError(err);
   }
 }
 
-// # Login to DHS: Authorize your mobile number to be used to make Enhanced WebRTC calls.
-// -----------------
-//  This will presents the OAuth consent flow
-
-// ## Virtual Number/Account ID Login
-// ---------
-// Allow the Virtual Number/Account ID user to login to DHS, if DHS login successful the success callback
-// function invokes the SDK method to perform Enhanced WebRTC login
-function login(event) {
-  if (event) {
-    event.preventDefault();
-  }
-
-  var data = {
-  }, form, i, e;
+function updateE911AddressId(event, form) {
+  event.preventDefault();
 
   clearError();
 
-  form = document.getElementById("loginForm");
+  try {
+    var address = validateAddress(form);
 
-  if (form) {
-    for (i = 0; i < form.elements.length; i = i + 1) {
-      e = form.elements[i];
-      if (e.type !== 'button' && e.type !== 'submit') {
-        data[e.name] = e.value;
-      }
-    }
+    getE911Id(address,
+      function (e911Id) {
+        associateE911Id(e911Id.e911Locations.addressIdentifier);
+      },
+      onError);
+
+  } catch (err) {
+    onError(err);
   }
-
-  // ## Attempt logging in to the DHS
-  //---------
-  ajaxRequest({
-    url: '/login',
-    method: 'POST',
-    data : data,
-    // Try to login to Enhanced WebRTC, i.e., create a Enhanced WebRTC Session.
-    success : function (response) {
-      var user = response.getJson();
-
-      ATT.rtc.dhs.createAccessToken({
-        app_scope: user.user_type,
-        success: function (data) {
-
-          var userId,
-            virtualNumber = user.virtual_number || '';
-
-          if (virtualNumber.length === 11 && virtualNumber.charAt(0).localeCompare('1') === 0) {
-            virtualNumber = virtualNumber.substr(1);
-          }
-
-          userId = (user.user_type === 'VIRTUAL_NUMBER') ? ('vtn:' + virtualNumber) : user.user_id;
-
-          ATT.rtc.associateAccessToken({
-            userId: userId,
-            token: data.access_token,
-            success: function () {
-              ATT.utils.extend(data, user);// store user data for Virtual Number/Account ID user
-              loginSuccessCallback(data);
-            },
-            error: onError
-          });
-        },
-        error: onError
-      });
-
-    },
-    error: onError
-  });
 }
 
+function loginVirtualNumber(event, form) {
+  loginVirtualNumberOrAccountIdUser(event, form, 'VIRTUAL_NUMBER');
+}
 
-// get authorize URL from DHS for Mobile Number user
-function loginMobileNumberUser() {
-// ## Login Mobile Number user using oAuth/User consent model
-// ---------
+function loginAccountIdUser(event, form) {
+  loginVirtualNumberOrAccountIdUser(event, form, 'ACCOUNT_ID');
+}
 
+function hideView(obj) {
+  if (!obj) {
+    return;
+  }
+  obj.style.display = 'none';
+}
+
+function showLoginForm(form) {
+  document.removeEventListener('click', hideView);
+  document.addEventListener('click', hideView.bind(null, form));
+
+  form.style.display = 'block';
+}
+
+function mobileNumberLogin() {
   // Attempt to authorize your mobile to make Enhanced WebRTC calls
   window.location.href = '/oauth/authorize';
 }
 
-// # Getting an Access Token
-// --------
-//    Use the authcode obtained from consent flow
-//
-// For Mobile Number user we obtain new access token every time the user goes through consent flow and authenticated
-// calls dhs to get access token on successful return it will call address page
-function getAccessToken(args) {
-  args = JSON.parse(decodeURI(args));
+function addOption(select, option, val) {
+  var opt = document.createElement('option');
+  opt.value = undefined === val ? option : val;
+  opt.innerHTML = option;
+  select.appendChild(opt);
+}
 
-  if (!args || !args.code) {
-    throw new Error('Failed to retrieve the user consent code.');
+function virtualNumberLogin(e) {
+  e.stopPropagation();
+
+  hideView(document.getElementById('login-account-id-form'));
+
+  var i,
+    form,
+    select;
+
+  form = document.getElementById('login-virtual-number-form');
+
+  if (!form) {
+    return;
   }
 
-  if (args.error) {
-    throw args.error;
-  }
-  // Attempt to retrieve an Access Token
-  ATT.rtc.dhs.createAccessToken({
-    app_scope: 'MOBILE_NUMBER',
-    auth_code: args.code,
-    success: function (data) {
-      try {
-        if (!data) {
-          throw 'Failed to retrieve the access token';
-        }
-        ATT.utils.extend(sessionData, data); // store the access token and other data
-        // On success we'll present the Address Form
-        switchView('address');
-      } catch (err) {
-        onError(err);
+  if (form.children && form.children.length > 0) {
+    for (i = 0; i < form.children.length; i = i + 1) {
+      if (form.children[i].name === 'username') {
+        select = form.children[i];
+        break;
       }
-    },
-    error: onError
+    }
+  }
+
+  if (select && select.children.length === 0 && sessionData.vtnPool && sessionData.vtnPool.length > 0) {
+    addOption(select, '-select-', '');
+    sessionData.vtnPool.forEach(function (vtn) {
+      addOption(select, vtn);
+    });
+  }
+
+  showLoginForm(form);
+}
+
+function accountIdUserLogin(e) {
+  e.stopPropagation();
+
+  hideView(document.getElementById('login-virtual-number-form'));
+
+  var form;
+
+  form = document.getElementById('login-account-id-form');
+
+  if (!form) {
+    return;
+  }
+
+  showLoginForm(form);
+}
+
+function updateAddress(e) {
+  e.stopPropagation();
+
+  var addressDiv =  document.getElementById("address-box");
+
+  document.removeEventListener('click', hideView);
+  document.addEventListener('click', hideView.bind(null, addressDiv));
+
+  addressDiv.style.display = 'block';
+
+  loadView('address', function (response) {
+    addressDiv.innerHTML = response.responseText;
+
+    var addressForm = document.getElementById('addressForm');
+    if (addressForm) {
+      addressForm.onsubmit = function (e) {
+        updateE911AddressId(e, addressForm);
+      };
+    }
   });
 }
 
-// ## Logout from DHS session
-function deleteSession(callback) {
-  ajaxRequest({
-    url: '/logout',
-    method: 'DELETE',
-    success: function (response) {
-      clearSessionData();
-      if (callback) {
-        callback(response.getJson());
-      }
-    },
-    error: onError
-  });
-}
-
-//Logs out the user from DHS, if successful invokes SDK logout so that Enhanced WebRTC session can be deleted
-// session is cleared on logout on success change view to logout
+// Invokes SDK logout so that Enhanced WebRTC session can be deleted
+// session is cleared on logout on success change view to login
 function logout() {
   if (sessionData.sessionId) {
     phoneLogout(function () {
       resetUI();
-      if (sessionData.user_id) {
-        deleteSession(function (response) {
-          switchView('logout', response);
-        });
-      } else {
-        clearSessionData();
-        switchView('logout');
-        setMessage('Enhanced WebRTC session ended');
-      }
-    });
-  } else if (sessionData.user_id) { // if there is a http session delete that first
-    deleteSession(function (response) {
-      resetUI();
-      switchView('logout', response);
-    });
-  }
-}
-
-// ## Delete User
-function deleteUser() {
-  var name = sessionData.user_name;
-  ajaxRequest({
-    url: '/users/' + sessionData.user_id,
-    method: 'DELETE',
-    success: function () {
-      deleteSession(function (data) {
-        data.message = 'User ' + name + ' deleted successfully';
-        switchView('logout', data);
+      clearSessionData();
+      switchToLoginView({
+        message: 'Enhanced WebRTC session ended'
       });
-    },
-    error: onError
-  });
-}
-
-function deleteProfile() {
-  var result = confirm('Are you sure that you want to delete your DHS profile?\n'
-    + 'This operation will log you out and delete your user.\n'
-    + 'You can no longer make Enhanced WebRTC calls with this user.');
-
-  if (!result) {
-    return;
-  }
-
-  if (sessionData.sessionId) {
-    phoneLogout(function () {
-      deleteUser();
     });
-  } else if (sessionData.user_id) { // if there is a http session delete that first
-    deleteUser();
-  } else {
-    clearSessionData();
-    switchView('logout');
   }
 }
 
 //Invokes SDK dial method to make outgoing call
 //-----
-function call(event) {
+function showCall(event) {
+  event.stopPropagation();
+
   clearError();
 
   // dial takes destination, mediaType, local and remote media HTML elements
@@ -407,7 +189,7 @@ function call(event) {
     that = event.currentTarget,
     callee,
     audioOnly,
-    btnConf = document.getElementById('btn-start-conference'),
+    btnConf = document.getElementById('btn-show-conference'),
     btnDial = document.getElementById('btn-dial'),
     localVideo = document.getElementById('localVideo'),
     remoteVideo = document.getElementById('remoteVideo');
@@ -425,12 +207,7 @@ function call(event) {
     audioOnly = document.getElementById('callAudioOnly').checked;
     callee = document.getElementById('callee').value;
     //util method to clean phone number
-//    callee = appendDomainToAccountIDCallee(callee);
     callee = cleanPhoneNumber(callee);
-
-    if (phone.isCallInProgress()) {
-      //showCallAlert('HOLDING...');
-    }
 
     dialCall(callee, (audioOnly ? 'audio' : 'video'), localVideo, remoteVideo);
   };
@@ -470,7 +247,7 @@ function resumeCall() {
 
 //Invokes SDK startConference method to begin conference
 //-----
-function conference(event) {
+function showConference(event) {
   clearError();
 
   var callForm = document.getElementById('callForm'),
@@ -478,7 +255,7 @@ function conference(event) {
     confAudioOnly,
     btnCreateConference = document.getElementById('btn-create-conference'),
     that = event.currentTarget,
-    btnCall = document.getElementById('btn-make-call'),
+    btnCall = document.getElementById('btn-show-call'),
     localVideo = document.getElementById('localVideo'),
     remoteVideo = document.getElementById('remoteVideo');
 
@@ -516,17 +293,9 @@ function getListOfInvitees(partcpnts) {
 function participant() {
   var partcpnts,
     listOfInvitees;
-//    partcpnt,
-//    counter;
 
   partcpnts = document.getElementById('participant').value;
   listOfInvitees = getListOfInvitees(partcpnts);
-
-//  for (counter = 0; counter < listOfInvitees.length; counter += 1) {
-//    partcpnt = appendDomainToAccountIDCallee(listOfInvitees[counter]);
-//
-//    listOfInvitees[counter] = partcpnt;
-//  }
 
   addParticipants(listOfInvitees);
 }
@@ -593,19 +362,6 @@ function removeUser() {
   var user = event.currentTarget.id;
 
   removeParticipant(user);
-}
-
-function showAddressView() {
-  var updateAddressDiv =  document.getElementById("address-box");
-
-  if (updateAddressDiv) {
-    updateAddressDiv.style.display = 'block';
-  }
-}
-
-function hideAddressView() {
-  var updateAddressDiv = document.getElementById("address-box");
-  updateAddressDiv.style.display = 'none';
 }
 
 function moveCall() {
