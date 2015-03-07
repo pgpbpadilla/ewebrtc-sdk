@@ -262,7 +262,7 @@
 
     
         
-            <div class="description"><p><strong>Note: This API is only usable if you use the built-in DHS provided with the SDK.</strong></p>
+            <div class="description"><p><strong>Note:</strong> This API is only usable if you use the built-in DHS provided with the SDK.</p>
 <p>The <code>dhs</code> namespace provides a client API for using our optional DHS RESTful API.
 The DHS RESTful API allows you to perform the following actions:</p>
 <ul>
@@ -325,21 +325,18 @@ The DHS RESTful API allows you to perform the following actions:</p>
         <dl>
             
 <dt>
-    <h4 class="name" id="createAccessToken"><span class="type-signature">&lt;static> </span>createAccessToken<span class="signature">(options)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="configure"><span class="type-signature">&lt;static> </span>configure<span class="signature">(options)</span><span class="type-signature"></span></h4>
     
     
-    <p class="summary">Create an Access Token using AT&T's OAuth for mobile number, virtual number and account id users.</p>
+    <p class="summary">Configures application with provided AT&T key and secret.</p>
     
 </dt>
 <dd>
     
     
     <div class="description">
-        <p>This methods accepts a <code>app_scope</code> and creates the <code>access token</code> for that particular <code>app_scope</code>.
-Accepted values for <code>app_scope</code> are: <code>MOBILE_NUMBER</code>, <code>VIRTUAL_NUMBER</code>,
-<code>ACCOUNT_ID</code> and <code>E911</code>.</p>
-<p>For mobile number user, the method requires an additional param <code>auth_code</code> for the authorization code
-obtained during the consent flow.</p>
+        <p>A DHS method to configure application with the passed AT&amp;T
+application key and secret</p>
     </div>
     
 
@@ -379,7 +376,7 @@ obtained during the consent flow.</p>
             <td class="type">
             
                 
-<span class="param-type">Object</span>
+<span class="param-type">object</span>
 
 
             
@@ -392,6 +389,168 @@ obtained during the consent flow.</p>
             <td class="description last">
                 <h6>Properties</h6>
                 
+
+<table class="params table table-striped">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+
+		<th>Type</th>
+
+		
+
+		
+
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+
+	<tbody>
+	
+
+        <tr>
+            
+                <td class="name"><code>app_key</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>AT&amp;T application key.</p></td>
+        </tr>
+
+	
+
+        <tr>
+            
+                <td class="name"><code>app_secret</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>AT&amp;T application secret.</p></td>
+        </tr>
+
+	
+	</tbody>
+</table>
+
+            </td>
+        </tr>
+
+	
+	</tbody>
+</table>
+
+    
+    
+    
+<dl class="details">
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+
+	
+
+	
+
+	
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+        <h5>Example</h5>
+        
+    <pre class="sunlight-highlight-javascript">var options = {
+  app_key: &#x27;thirtytwocharacterapplicationkey&#x27;,
+  app_secret: &#x27;32_characters_application_secret&#x27;
+};
+
+ATT.rtc.dhs.configure(options);</pre>
+
+
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="createAccessToken"><span class="type-signature">&lt;static> </span>createAccessToken<span class="signature">(options, app_scope, <span class="optional">auth_code</span>, success, error)</span><span class="type-signature"></span></h4>
+    
+    
+    <p class="summary">Creates an Access Token using AT&T's OAuth for mobile number, virtual number and account id users</p>
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>This methods accepts a <code>app_scope</code> and creates the <code>access token</code> for that particular <code>app_scope</code>
+Accepted values for <code>app_scope</code> are: <code>MOBILE_NUMBER</code>, <code>VIRTUAL_NUMBER</code>,
+<code>ACCOUNT_ID</code> and <code>E911</code>.
+This method requires an access token obtained using <code>E911</code> auth_scope and a physical address with
+obtained during the consent flow.</p>
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
 
 <table class="params table table-striped">
     <thead>
@@ -417,13 +576,44 @@ obtained during the consent flow.</p>
 
         <tr>
             
+                <td class="name"><code>options</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">object</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+	
+
+        <tr>
+            
                 <td class="name"><code>app_scope</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">String</span>
+<span class="param-type">string</span>
 
 
             
@@ -454,7 +644,7 @@ obtained during the consent flow.</p>
             <td class="type">
             
                 
-<span class="param-type">String</span>
+<span class="param-type">string</span>
 
 
             
@@ -474,7 +664,7 @@ obtained during the consent flow.</p>
 
             
 
-            <td class="description last"><p>Authorization Code from user consent for mobile number user.</p></td>
+            <td class="description last"><p>Authorization Code from user consent for mobile number user</p></td>
         </tr>
 
 	
@@ -487,7 +677,7 @@ obtained during the consent flow.</p>
             <td class="type">
             
                 
-<span class="param-type"><a href="ATT.rtc.dhs.html#accessTokenSuccess">ATT.rtc.dhs.accessTokenSuccess</a></span>
+<span class="param-type">function</span>
 
 
             
@@ -505,8 +695,7 @@ obtained during the consent flow.</p>
 
             
 
-            <td class="description last"><p>The callback that handles the
-succesful response after creating an AT&amp;T OAuth Access Token.</p></td>
+            <td class="description last"><p>The callback that handles the successful response after creating an AT&amp;T OAuth Access Token</p></td>
         </tr>
 
 	
@@ -519,7 +708,7 @@ succesful response after creating an AT&amp;T OAuth Access Token.</p></td>
             <td class="type">
             
                 
-<span class="param-type"><a href="ATT.rtc.dhs.html#createTokenError">ATT.rtc.dhs.createTokenError</a></span>
+<span class="param-type">function</span>
 
 
             
@@ -533,6 +722,581 @@ succesful response after creating an AT&amp;T OAuth Access Token.</p></td>
 
                 
                 </td>
+            
+
+            
+
+            <td class="description last"><p>The callback that handles the generated error</p></td>
+        </tr>
+
+	
+	</tbody>
+</table>
+
+    
+    
+    
+<dl class="details">
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+
+	
+
+	
+
+	
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+        <h5>Examples</h5>
+        
+    <pre class="sunlight-highlight-javascript">&#x2F;&#x2F; Create access token using DHS
+var options = {
+  app_scope: &#x27;E911&#x27;,
+  success: function (result) {
+     &#x2F;&#x2F; do something
+  },
+  error: function (err) {
+     &#x2F;&#x2F; do something
+  }
+};
+
+ATT.rtc.dhs.createAccessToken(options);</pre>
+
+    <pre class="sunlight-highlight-javascript">&#x2F;&#x2F; Create access token for Mobile Number using DHS
+var options = {
+  app_scope: &#x27;MOBILE_NUMBER&#x27;,
+  auth_code: &#x27;auth_code_from_consent_flow&#x27;,
+  success: function (result) {
+     &#x2F;&#x2F; do something
+  },
+  error: function (err) {
+     &#x2F;&#x2F; do something
+  }
+};
+
+ATT.rtc.dhs.createAccessToken(options);</pre>
+
+
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="createE911Id"><span class="type-signature">&lt;static> </span>createE911Id<span class="signature">(options)</span><span class="type-signature"></span></h4>
+    
+    
+    <p class="summary">Creates a new E911 Id using an <code>e911</code> scope access token and an address</p>
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>E911 Id is required for mobile number and virtual number user for creating enhanced webrtc session.
+Use this function to create an E911 Id that can be used for creating the enhanced webrtc session
+for mobile number and virtual number users.
+This method requires an access token obtained using <code>E911</code> auth_scope and a physical address with
+these <code>string</code> fields:</p>
+<ul>
+<li>First Name</li>
+<li>Last Name</li>
+<li>House Number</li>
+<li>Street</li>
+<li>Unit (optional)</li>
+<li>City</li>
+<li>State</li>
+<li>Zip Code</li>
+<li>Is Confirmed (True or False)</li>
+</ul>
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params table table-striped">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+
+		<th>Type</th>
+
+		
+
+		
+
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+
+	<tbody>
+	
+
+        <tr>
+            
+                <td class="name"><code>options</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">
+                <h6>Properties</h6>
+                
+
+<table class="params table table-striped">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+
+		<th>Type</th>
+
+		
+
+		
+
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+
+	<tbody>
+	
+
+        <tr>
+            
+                <td class="name"><code>token</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Access Token</p></td>
+        </tr>
+
+	
+
+        <tr>
+            
+                <td class="name"><code>address</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>The user's address</p>
+                <h6>Properties</h6>
+                
+
+<table class="params table table-striped">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+
+		<th>Type</th>
+
+		
+		<th>Argument</th>
+		
+
+		
+
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+
+	<tbody>
+	
+
+        <tr>
+            
+                <td class="name"><code>first_name</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last"><p>The user's first name</p></td>
+        </tr>
+
+	
+
+        <tr>
+            
+                <td class="name"><code>last_name</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last"><p>The user's last name</p></td>
+        </tr>
+
+	
+
+        <tr>
+            
+                <td class="name"><code>house_number</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last"><p>The user's house number</p></td>
+        </tr>
+
+	
+
+        <tr>
+            
+                <td class="name"><code>unit</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last"><p>Unit/Apt./Suite number</p></td>
+        </tr>
+
+	
+
+        <tr>
+            
+                <td class="name"><code>street</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last"><p>The user's street</p></td>
+        </tr>
+
+	
+
+        <tr>
+            
+                <td class="name"><code>city</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last"><p>The user's city</p></td>
+        </tr>
+
+	
+
+        <tr>
+            
+                <td class="name"><code>state</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last"><p>The user's state</p></td>
+        </tr>
+
+	
+
+        <tr>
+            
+                <td class="name"><code>zip</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last"><p>The user's zip code</p></td>
+        </tr>
+
+	
+	</tbody>
+</table>
+
+            </td>
+        </tr>
+
+	
+
+        <tr>
+            
+                <td class="name"><code>is_confirmed</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Confirm that the address exists (even if not found in the database)</p></td>
+        </tr>
+
+	
+
+        <tr>
+            
+                <td class="name"><code>success</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>The callback that handles the successful response after creating an AT&amp;T E911 Id</p></td>
+        </tr>
+
+	
+
+        <tr>
+            
+                <td class="name"><code>error</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+            
+            </td>
+
             
 
             
@@ -596,26 +1360,30 @@ succesful response after creating an AT&amp;T OAuth Access Token.</p></td>
     
     
     
-        <h5>Examples</h5>
+        <h5>Example</h5>
         
-    <pre class="sunlight-highlight-javascript">&#x2F;&#x2F; Create access token using DHS
-var success = function () {...};
-var error = function () {...};
-ATT.rtc.dhs.createAccessToken({
-  app_scope: &#x27;E911&#x27;,
-  success: success,
-  error: error
-});</pre>
+    <pre class="sunlight-highlight-javascript">&#x2F;&#x2F; Create E911 id using DHS
+var options = {
+  token: &#x27;token&#x27;,
+  address: {
+    first_name: &#x27;John&#x27;,
+    last_name: &#x27;Doe&#x27;,
+    house_number: &#x27;1111&#x27;,
+    street: &#x27;ABC Street&#x27;,
+    city: &#x27;My City&#x27;,
+    state: &#x27;My State&#x27;,
+    zip: &#x27;12345&#x27;
+  },
+  is_confirmed: &#x27;false&#x27;,
+  success: function (result) {
+     &#x2F;&#x2F; do something
+  },
+  error: function (err) {
+     &#x2F;&#x2F; do something
+  }
+};
 
-    <pre class="sunlight-highlight-javascript">&#x2F;&#x2F; Create access token using DHS
-var success = function () {...};
-var error = function () {...};
-ATT.rtc.dhs.createAccessToken({
-  app_scope: &#x27;MOBILE_NUMBER&#x27;,
-  auth_code: &#x27;auth_code_from_consent_flow&#x27;
-  success: success,
-  error: error
-});</pre>
+ATT.rtc.dhs.createE911Id(options);</pre>
 
 
     
@@ -624,41 +1392,19 @@ ATT.rtc.dhs.createAccessToken({
         
             
 <dt>
-    <h4 class="name" id="createE911Id"><span class="type-signature">&lt;static> </span>createE911Id<span class="signature">(options)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="getUserConsentUrl"><span class="type-signature">&lt;static> </span>getUserConsentUrl<span class="signature">()</span><span class="type-signature"> &rarr; {string}</span></h4>
     
     
-    <p class="summary">Creates a new E911 Id using an `e911` scope access token and an address</p>
+    <p class="summary">Returns user consent page url</p>
     
 </dt>
 <dd>
     
     
     <div class="description">
-        <p>E911 Id is required for mobile number and virtual number user for creating enhanced webrtc session.
-Use this function to create an E911 Id that can be used for creating the enhanced webrtc session
-for mobile number and virtual number users.
-This method requires an access token obtained using <code>E911</code> auth_scope and a physical address with
-these <code>string</code> fields:</p>
-<ul>
-<li><p>first_name</p>
-</li>
-<li><p>last_name</p>
-</li>
-<li><p>house_number</p>
-</li>
-<li><p>street</p>
-</li>
-<li><p>unit (optional)</p>
-</li>
-<li><p>city</p>
-</li>
-<li><p>state</p>
-</li>
-<li><p>zip</p>
-</li>
-<li><p>is_confirmed (true or false)</p>
-</li>
-</ul>
+        <p>Forms the consent page url by concatenating the API endpoint,
+Authorization URI, Application Key and Application Scope in
+a single URL string</p>
     </div>
     
 
@@ -667,488 +1413,6 @@ these <code>string</code> fields:</p>
     
     
     
-        <h5>Parameters:</h5>
-        
-
-<table class="params table table-striped">
-    <thead>
-	<tr>
-		
-		<th>Name</th>
-		
-
-		<th>Type</th>
-
-		
-
-		
-
-		<th class="last">Description</th>
-	</tr>
-	</thead>
-
-	<tbody>
-	
-
-        <tr>
-            
-                <td class="name"><code>options</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Object</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">
-                <h6>Properties</h6>
-                
-
-<table class="params table table-striped">
-    <thead>
-	<tr>
-		
-		<th>Name</th>
-		
-
-		<th>Type</th>
-
-		
-		<th>Argument</th>
-		
-
-		
-
-		<th class="last">Description</th>
-	</tr>
-	</thead>
-
-	<tbody>
-	
-
-        <tr>
-            
-                <td class="name"><code>token</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Object</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-
-                
-
-                
-                </td>
-            
-
-            
-
-            <td class="description last"><p>Access token</p></td>
-        </tr>
-
-	
-
-        <tr>
-            
-                <td class="name"><code>address</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Object</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-
-                
-
-                
-                </td>
-            
-
-            
-
-            <td class="description last"><p>Address object</p></td>
-        </tr>
-
-	
-
-        <tr>
-            
-                <td class="name"><code>first_name</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">String</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-
-                
-
-                
-                </td>
-            
-
-            
-
-            <td class="description last"><p>First name</p></td>
-        </tr>
-
-	
-
-        <tr>
-            
-                <td class="name"><code>last_name</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">String</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-
-                
-
-                
-                </td>
-            
-
-            
-
-            <td class="description last"><p>Last name</p></td>
-        </tr>
-
-	
-
-        <tr>
-            
-                <td class="name"><code>house_number</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">String</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-
-                
-
-                
-                </td>
-            
-
-            
-
-            <td class="description last"><p>House number</p></td>
-        </tr>
-
-	
-
-        <tr>
-            
-                <td class="name"><code>street</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">String</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-
-                
-
-                
-                </td>
-            
-
-            
-
-            <td class="description last"><p>Street name</p></td>
-        </tr>
-
-	
-
-        <tr>
-            
-                <td class="name"><code>unit</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">String</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-
-            <td class="description last"><p>Unit/Apt./Suite number</p></td>
-        </tr>
-
-	
-
-        <tr>
-            
-                <td class="name"><code>city</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">String</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-
-                
-
-                
-                </td>
-            
-
-            
-
-            <td class="description last"><p>City</p></td>
-        </tr>
-
-	
-
-        <tr>
-            
-                <td class="name"><code>state</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">String</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-
-                
-
-                
-                </td>
-            
-
-            
-
-            <td class="description last"><p>State</p></td>
-        </tr>
-
-	
-
-        <tr>
-            
-                <td class="name"><code>zip</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">String</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-
-                
-
-                
-                </td>
-            
-
-            
-
-            <td class="description last"><p>Zip code</p></td>
-        </tr>
-
-	
-
-        <tr>
-            
-                <td class="name"><code>is_confirmed</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">String</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-
-                
-
-                
-                </td>
-            
-
-            
-
-            <td class="description last"><p>Confirm that the address exists (even if not found in the database)</p></td>
-        </tr>
-
-	
-
-        <tr>
-            
-                <td class="name"><code>success</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">function</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-
-                
-
-                
-                </td>
-            
-
-            
-
-            <td class="description last"><p>Success callback</p></td>
-        </tr>
-
-	
-
-        <tr>
-            
-                <td class="name"><code>error</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">function</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-
-                
-
-                
-                </td>
-            
-
-            
-
-            <td class="description last"><p>Failure callback</p></td>
-        </tr>
-
-	
-	</tbody>
-</table>
-
-            </td>
-        </tr>
-
-	
-	</tbody>
-</table>
-
-    
     
     
 <dl class="details">
@@ -1191,28 +1455,35 @@ these <code>string</code> fields:</p>
     
     
     
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    <p>User consent page url</p>
+</div>
+
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">string</span>
+
+
+	</dd>
+</dl>
+
+
+        
     
     
         <h5>Example</h5>
         
-    <pre class="sunlight-highlight-javascript">&#x2F;&#x2F; Create E911 id using DHS
-var success = function () {...};
-var error = function () {...};
-ATT.rtc.dhs.createAccessToken({
-  token: &#x27;e911_id_scoped_access_token&#x27;,
-  address: {
-   first_name: &#x27;John&#x27;,
-   last_name: &#x27;Doe&#x27;,
-   house_number: &#x27;1111&#x27;,
-   street: &#x27;ABC Street&#x27;,
-   city: &#x27;Seattle&#x27;,
-   state: &#x27;WA&#x27;,
-   zip: &#x27;98001&#x27;
-   is_confirmed: &#x27;false&#x27;
-  },
-  success: success,
-  error: error
-});</pre>
+    <pre class="sunlight-highlight-javascript">&#x2F;&#x2F; Get user consent URL
+var consentURL = ATT.rtc.dhs.getUserConsentUrl();</pre>
 
 
     
@@ -1221,366 +1492,6 @@ ATT.rtc.dhs.createAccessToken({
         </dl>
     
 
-    
-        <h3 class="subsection-title">Type Definitions</h3>
-
-        <dl>
-                
-<dt>
-    <h4 class="name" id="accessTokenSuccess"><span class="type-signature"></span>accessTokenSuccess<span class="signature">(OAuthToken)</span><span class="type-signature"></span></h4>
-    
-    
-</dt>
-<dd>
-    
-    
-
-    
-    
-    
-    
-    
-        <h5>Parameters:</h5>
-        
-
-<table class="params table table-striped">
-    <thead>
-	<tr>
-		
-		<th>Name</th>
-		
-
-		<th>Type</th>
-
-		
-
-		
-
-		<th class="last">Description</th>
-	</tr>
-	</thead>
-
-	<tbody>
-	
-
-        <tr>
-            
-                <td class="name"><code>OAuthToken</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Object</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>An OAuth access token which must be
-presented by the authorized app to make subsequent RESTful API
-requests to the API Gateway.</p>
-                <h6>Properties</h6>
-                
-
-<table class="params table table-striped">
-    <thead>
-	<tr>
-		
-		<th>Name</th>
-		
-
-		<th>Type</th>
-
-		
-
-		
-
-		<th class="last">Description</th>
-	</tr>
-	</thead>
-
-	<tbody>
-	
-
-        <tr>
-            
-                <td class="name"><code>access_token</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">String</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>Specifies a token that is used to request access to an API.</p></td>
-        </tr>
-
-	
-
-        <tr>
-            
-                <td class="name"><code>token_type</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">String</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>Specifies the type for the new OAuth access token.</p></td>
-        </tr>
-
-	
-
-        <tr>
-            
-                <td class="name"><code>expires_in</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Number</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>Specifies the number of seconds before the current
-OAuth access token expires.</p></td>
-        </tr>
-
-	
-
-        <tr>
-            
-                <td class="name"><code>refresh_token</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">String</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>Specifies the token that is used to obtain a
-new OAuth access token after the initial OAuth access token that is returned
-in a previous response expires.</p></td>
-        </tr>
-
-	
-	</tbody>
-</table>
-
-            </td>
-        </tr>
-
-	
-	</tbody>
-</table>
-
-    
-    
-    
-<dl class="details">
-	
-
-	
-
-	
-
-	
-
-	
-
-	
-
-	
-
-	
-
-	
-
-
-
-	
-
-	
-
-	
-
-	
-</dl>
-
-    
-    
-
-    
-
-    
-    
-    
-    
-    
-    
-    
-        <h5>Example</h5>
-        
-    <pre class="sunlight-highlight-javascript">         {
-           &quot;access_token&quot;:&quot;Access_Token&quot;,
-           &quot;token_type&quot;:&quot;bearer&quot;,
-           &quot;expires_in&quot;:157680000,
-           &quot;refresh_token&quot;:&quot;Refresh_Token&quot;
-         }</pre>
-
-
-    
-</dd>
-
-            
-                
-<dt>
-    <h4 class="name" id="createTokenError"><span class="type-signature"></span>createTokenError<span class="signature">(error)</span><span class="type-signature"></span></h4>
-    
-    
-</dt>
-<dd>
-    
-    
-
-    
-    
-    
-    
-    
-        <h5>Parameters:</h5>
-        
-
-<table class="params table table-striped">
-    <thead>
-	<tr>
-		
-		<th>Name</th>
-		
-
-		<th>Type</th>
-
-		
-
-		
-
-		<th class="last">Description</th>
-	</tr>
-	</thead>
-
-	<tbody>
-	
-
-        <tr>
-            
-                <td class="name"><code>error</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Object</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>The details of the error.</p></td>
-        </tr>
-
-	
-	</tbody>
-</table>
-
-    
-    
-    
-<dl class="details">
-	
-
-	
-
-	
-
-	
-
-	
-
-	
-
-	
-
-	
-
-	
-
-
-
-	
-
-	
-
-	
-
-	
-</dl>
-
-    
-    
-
-    
-
-    
-    
-    
-    
-    
-    
-    
-</dd>
-
-            </dl>
     
 
     
@@ -1604,7 +1515,7 @@ in a previous response expires.</p></td>
 					
 		<span class="jsdoc-message">
 		Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.2</a>
-		on 2015-02-20T21:19:34-08:00 using the <a
+		on 2015-03-06T20:12:22-08:00 using the <a
 			href="https://github.com/terryweiss/docstrap">DocStrap template</a>.
 		</span>
 				</footer>

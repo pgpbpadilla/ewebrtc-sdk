@@ -1,15 +1,23 @@
 /*jslint browser: true, devel: true, node: true, debug: true, todo: true, indent: 2, maxlen: 150*/
-/*global ATT, console, log, phone, clearMessage, clearError, switchToLoginView, resetUI,
+/*global ATT, console, log, loadConfiguration, clearMessage, clearError, onSessionDisconnected,
   validateAddress, associateE911Id, getE911Id, loginVirtualNumberOrAccountIdUser, loginEnhancedWebRTC,
-  onError, clearSessionData, phoneLogout, loadView, dialCall, answer, answer2ndCall,
+  onError, phoneLogout, loadView, switchView, dialCall, answer, answer2ndCall,
   hold, resume, startConference, joinConference, addParticipants,
   getParticipants, removeParticipant, move, switchCall, cleanPhoneNumber*/
 
 'use strict';
 
-var sessionData = {},
+var env_config,
+  sessionData = {},
   participantsVisible = false,
   holder;
+
+function configureSampleApp(callback) {
+  loadConfiguration(function (config) {
+    env_config = config;
+    callback(env_config);
+  });
+}
 
 function createE911AddressId(event, form) {
   event.preventDefault();
@@ -17,7 +25,7 @@ function createE911AddressId(event, form) {
   clearError();
 
   if (!sessionData.access_token) {
-    switchToLoginView('login');
+    switchView('login');
     onError('No access token available to login to Enhanced WebRTC. Please create an access token first');
     return;
   }
@@ -25,7 +33,8 @@ function createE911AddressId(event, form) {
   try {
     var address = validateAddress(form);
 
-    getE911Id(address,
+    getE911Id(address.base,
+      address.is_confirmed,
       function (e911Id) {
         loginEnhancedWebRTC(sessionData.access_token, e911Id);
       },
@@ -79,7 +88,7 @@ function showLoginForm(form) {
 
 function mobileNumberLogin() {
   // Attempt to authorize your mobile to make Enhanced WebRTC calls
-  window.location.href = '/oauth/authorize';
+  window.location.href = '/oauth/authorize?redirect_uri=' + window.location.href + '/consent.html';
 }
 
 function addOption(select, option, val) {
@@ -113,9 +122,10 @@ function virtualNumberLogin(e) {
     }
   }
 
-  if (select && select.children.length === 0 && sessionData.vtnPool && sessionData.vtnPool.length > 0) {
+  if (select && select.children.length === 0 &&
+      env_config && env_config.virtual_numbers_pool && env_config.virtual_numbers_pool.length > 0) {
     addOption(select, '-select-', '');
-    sessionData.vtnPool.forEach(function (vtn) {
+    env_config.virtual_numbers_pool.forEach(function (vtn) {
       addOption(select, vtn);
     });
   }
@@ -161,22 +171,14 @@ function updateAddress(e) {
   });
 }
 
-// Invokes SDK logout so that Enhanced WebRTC session can be deleted
-// session is cleared on logout on success change view to login
 function logout() {
   if (sessionData.sessionId) {
-    phoneLogout(function () {
-      resetUI();
-      clearSessionData();
-      switchToLoginView({
-        message: 'Enhanced WebRTC session ended'
-      });
-    });
+    phoneLogout();
+    return;
   }
+  onSessionDisconnected();
 }
 
-//Invokes SDK dial method to make outgoing call
-//-----
 function showCall(event) {
   event.stopPropagation();
 
@@ -245,8 +247,6 @@ function resumeCall() {
   resume();
 }
 
-//Invokes SDK startConference method to begin conference
-//-----
 function showConference(event) {
   clearError();
 

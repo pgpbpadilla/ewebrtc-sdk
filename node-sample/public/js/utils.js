@@ -1,6 +1,6 @@
 /*jslint browser: true, devel: true, node: true, debug: true, todo: true, indent: 2, maxlen: 150*/
 /*global ATT, RESTClient, console, log, phone, holder, eWebRTCDomain,
-  sessionData, defaultHeaders, onError, getCallerInfo,
+  sessionData, env_config, defaultHeaders, onError, getCallerInfo,
   loginMobileNumber, createAccessToken, associateAccessToken, createE911Id,
   loginEnhancedWebRTC, hideParticipants, showParticipants*/
 
@@ -42,6 +42,15 @@ function ajaxRequest(args) {
     error: args.error || onError
   });
   rc.ajax();
+}
+
+function loadConfiguration(callback) {
+  ajaxRequest({
+    url: '/configuration',
+    success: function (response) {
+      callback(response.getJson());
+    }
+  });
 }
 
 function clearSessionData() {
@@ -111,7 +120,7 @@ function setupHomeView() {
     callActions.style.opacity = '0';
   });
 
-  document.getElementById('callee').value =  '@' + eWebRTCDomain;
+  document.getElementById('callee').value =  '@' + env_config.ewebrtc_domain;
 }
 
 function formatError(errObj) {
@@ -233,18 +242,6 @@ function loadAndCreateView(view, data) {
   loadView(view, createView.bind(this, view, data));
 }
 
-function loadVirtualNumbers(callback) {
-  log('Getting virtual number pool');
-
-  ajaxRequest({
-    url: 'dhs/vtnpool',
-    success: function (response) {
-      sessionData.vtnPool = response.getJson();
-      callback();
-    }
-  });
-}
-
 function switchView(view, data) {
   if (!view) {
     return;
@@ -257,25 +254,16 @@ function switchView(view, data) {
     if (!data) {
       data = sessionData;
     }
-    if (data) {
-      if (!data.sessionId) {
-        data.message = '';
-        switchView('logout', data);
-        return;
-      }
-      loadAndCreateView(view, data);
+    if (!data || (data && !data.sessionId)) {
+      switchView('login', {
+        message: 'Your session is invalid. Please login again.'
+      });
       return;
     }
-    loadAndCreateView('logout');
+    loadAndCreateView(view, data);
     return;
   }
   loadAndCreateView(view, data);
-}
-
-function switchToLoginView(data) {
-  loadVirtualNumbers(function () {
-    switchView('login', data);
-  });
 }
 
 // ### loads the default view into the landing page
@@ -294,7 +282,7 @@ function loadDefaultView() {
     if (args) {
       loginMobileNumber(args);
     } else {
-      switchToLoginView({
+      switchView('login', {
         message: 'Please login to start making calls !!!'
       });
     }
@@ -303,11 +291,15 @@ function loadDefaultView() {
   }
 }
 
-function getE911Id(address, success, error) {
+function getE911Id(address, is_confirmed, success, error) {
   createAccessToken('E911',
     null,
     function (data) {
-      createE911Id(data.access_token, address, success, error);
+      try {
+        createE911Id(data.access_token, address, is_confirmed, success, error);
+      } catch (error) {
+        onError(error);
+      }
     },
     error);
 }
@@ -340,7 +332,7 @@ function login(userType, authCode, userName) {
       data.user_type = userType;
 
       if (userType !== 'MOBILE_NUMBER') { // VIRTUAL_NUMBER and ACCOUNT_ID
-        data.user_name = userType === 'VIRTUAL_NUMBER' ? userName : userName + '@' + eWebRTCDomain;
+        data.user_name = userType === 'VIRTUAL_NUMBER' ? userName : userName + '@' + env_config.ewebrtc_domain;
 
         ATT.utils.extend(sessionData, data); // save token/user data locally
 
@@ -408,6 +400,7 @@ function validateAddress(form) {
   var i,
     e,
     address = {
+      base: {}
     },
     addressFormat = {
       'first_name': {
@@ -452,7 +445,7 @@ function validateAddress(form) {
         if (addressFormat[e.name].required === true && !e.value) {
           throw addressFormat[e.name].display + ' is a required field';
         }
-        address[e.name] = e.value;
+        address.base[e.name] = e.value;
       } else if (e.type === 'checkbox') {
         address[e.name] = (e.checked).toString();
       }
@@ -501,13 +494,6 @@ function onError(err) {
   var errObj = err;
 
   if ('object' === typeof errObj) {
-    if (errObj.error &&
-        (errObj.error.HttpStatusCode === 403 ||
-        errObj.error.HttpStatusCode === 404)) {
-      switchView('logout');
-      setMessage('Enhanced WebRTC session expired');
-      return;
-    }
     errObj = formatError(errObj);
   }
   errObj = errObj.toString();
@@ -534,11 +520,18 @@ function onNotification(data) {
 }
 
 function onSessionDisconnected() {
-  setMessage('Your enhanced WebRTC session has ended');
-}
-function onSessionExpired() {
+  resetUI();
+  clearSessionData();
   switchView('login', {
-    message: 'Your enhanced WebRTC session has expired. Please login again'
+    message: 'Your enhanced WebRTC session has ended'
+  });
+}
+
+function onSessionExpired() {
+  resetUI();
+  clearSessionData();
+  switchView('login', {
+    message: 'Your enhanced WebRTC session has expired. Please login again.'
   });
 }
 

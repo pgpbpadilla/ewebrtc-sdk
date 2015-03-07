@@ -1,36 +1,80 @@
 {
-  "name": "att.webrtc.sample",
-  "version": "1.0.0-beta",
-  "description": "Enahcned WebRTC Sample Application built with AT&T Enhanced WebRTC JS SDK",
-  "homepage": "https://developer.att.com",
-  "keywords": [ "Enhanced WebRTC", "AT&T" ],
-  "license": "AT&T. Uses 3rd party libraries. See 3P-LICENSES.txt for attribution",
-  "author": "AT&T Developer Program, DRT/LTA",
-  "private": true,
-
-  "dhs_https_host": "localhost",
-  "dhs_https_port" : 10011,
-
-  "sample_http_port": 9000,
-  "sample_https_port": 9001,
-
-  "scripts": {
-    "start": "node ./bin/www"
-  },
-
-  "engines": {
-    "node": "0.11.*"
-  },
-
-  "dependencies": {
-    "express": "~4.2.0",
-    "express-session": "*",
-    "static-favicon": "~1.0.0",
-    "morgan": "~1.0.0",
-    "cookie-parser": "~1.0.1",
-    "body-parser": "~1.0.0",
-    "debug": "~0.7.4",
-    "hjs": "~0.0.6",
-    "less-middleware": "1.0.x"
-  }
+	"name": "att.webrtc.sample",
+	"version": "2.0.0-beta",
+	"description": "Enahcned WebRTC Sample Application built with AT&T Enhanced WebRTC JS SDK",
+	"homepage": "https://developer.att.com",
+	"keywords": [
+		"Enhanced WebRTC",
+		"AT&T"
+	],
+	"license": "AT&T. Uses 3rd party libraries. See 3P-LICENSES.txt for attribution",
+	"author": "AT&T Developer Program, DRT/LTA",
+	"private": true,
+	"files": [
+		"sample.cert",
+		"sample.key",
+		"README.md",
+		"RELEASE.md",
+		"3P-LICENSES.txt",
+		"lib",
+		"fresh-start.sh"
+	],
+	"scripts": {
+		"start": "node app.js sandbox"
+	},
+	"engines": {
+		"node": "0.11.*"
+	},
+	"http_port": 9000,
+	"https_port": 9001,
+	"cert_file": "sample.cert",
+	"key_file": "sample.key",
+	"logs_dir": "logs",
+	"cors_domains": [
+		"your.test.com:9001",
+		"*.prod.com:9001",
+		"*.sandbox.myapp.com:9001",
+		"0.0.0.0:9001",
+		"localhost:9001",
+		"127.0.0.1:9001"
+	],
+	"default_api_env": "prod",
+	"sandbox": {
+		"api_endpoint": "https://api.att.com",
+		"ewebrtc_uri": "/RTC/v1",
+		"app_key": "YourAppKey",
+		"app_secret": "YourAppSecret",
+		"oauth_callback": "https://127.0.0.1:9001/oauth/callback",
+		"virtual_numbers_pool": [
+			"number1",
+			"number2",
+			"number3"
+		],
+		"ewebrtc_domain": "your.ewebrtc_domain.com"
+	},
+	"prod": {
+		"api_endpoint": "https://api.att.com",
+		"ewebrtc_uri": "/RTC/v1",
+		"app_key": "YourAppKey",
+		"app_secret": "YourAppSecret",
+		"oauth_callback": "https://127.0.0.1:9001/oauth/callback",
+		"virtual_numbers_pool": [
+			"number1",
+			"number2",
+			"number3"
+		],
+		"ewebrtc_domain": "your.ewebrtc_domain.com"
+	},
+	"dependencies": {
+		"express": "~4.2.0",
+		"restify": "^2.8.5",
+		"static-favicon": "~1.0.0",
+		"body-parser": "~1.0.0",
+		"hjs": "~0.0.6"
+	},
+	"devDependencies": {
+		"grunt": "^0.4.5",
+		"grunt-jslint": "^1.1.12",
+		"grunt-docco": "^0.3.3"
+	}
 }

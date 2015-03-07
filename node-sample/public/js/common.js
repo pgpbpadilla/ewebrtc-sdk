@@ -7,20 +7,18 @@
 /*jslint browser: true, devel: true, node: true, debug: true, todo: true, indent: 2, maxlen: 150*/
 
 // Make JSLint aware of variables and functions that are defined in other files.
-/*global ATT, unsupportedBrowserError, checkEnhancedWebRTCSession, loadDefaultView, addCall,
-  onSessionReady, onSessionDisconnected, onSessionExpired, onAddressUpdated, onError, onWarning,
-  onDialing, onIncomingCall, onConnecting, onCallConnected, onMediaEstablished, onEarlyMedia,
-  onAnswering, onCallMuted, onCallUnmuted, onCallHold, onCallResume,
-  onCallDisconnecting, onCallDisconnected, onCallCanceled, onCallRejected,
-  onConferenceConnected, onConferenceDisconnected, onConferenceInvite, onConferenceCanceled, onConferenceEnded,
-  onJoiningConference, onInvitationSent, onInviteAccepted, onInviteRejected, onParticipantRemoved,
-  onConferenceDisconnecting, onConferenceHold, onConferenceResumed,
-  onNotification, onCallSwitched, onCallRingbackProvided, onTransferring, onTransferred*/
+/*global ATT, unsupportedBrowserError, checkEnhancedWebRTCSession, loadDefaultView, configureSampleApp, addCall,
+  onSessionReady, onSessionDisconnected, onSessionExpired, onAddressUpdated, onError, onWarning, onDialing,
+  onIncomingCall, onConnecting, onCallConnected, onMediaEstablished, onEarlyMedia, onAnswering, onCallMuted,
+  onCallUnmuted, onCallHold, onCallResume, onCallDisconnecting, onCallDisconnected, onCallCanceled,
+  onCallRejected, onConferenceConnected, onConferenceDisconnected, onConferenceInvite, onConferenceCanceled,
+  onConferenceEnded, onJoiningConference, onInvitationSent, onInviteAccepted, onInviteRejected,
+  onParticipantRemoved, onConferenceDisconnecting, onConferenceHold, onConferenceResumed, onNotification,
+  onCallSwitched, onCallRingbackProvided, onTransferring, onTransferred*/
 
 'use strict';
 
 var phone,
-  eWebRTCDomain,
   bWebRTCSupportExists;
 
 // ### Check if the current browser has WebRTC capability
@@ -34,43 +32,38 @@ if (!bWebRTCSupportExists) {
 
 // ## SDK Setup
 // -----------
-// In order to make calls, you first need to
-// setup the environment that the library will use and also
-// make sure the browser supports Enhanced WebRTC.
-
+// In order to make calls, you first need to setup the library
+// so that it can perform operations like create an access token and
+// e911 id. These are required for the login operation.
+function configure(options) {
 // ### Configure the SDK
 // ---------------------------------
-// The purpose of [**ATT.rtc.configure**](../../lib/webrtc-sdk/doc/ATT.rtc.html#configure) is to configure the Enhanced
-// WebRTC Domain and Enhanced WebRTC API endpoint.
-// There are two ways in which this method can be used:
-//
-// * Using the Node DHS provided together with the sample application. To do this
-// just pass the `success` callback and optionally an `error` callback. The library will
-// query the DHS to obtain the correct configuration options: Enhanced WebRTC Domain and Enhanced WebRTC API Endpoint.
-//```javascript
-//  ATT.rtc.configure(function () { // success callback
-// ...}, function () { // optional error callback
-// ... });
-//```
-// * Using configuration options obtained using your own DHS. To do this just pass an object containing
-// the Enhanced WebRTC Domain and optionally the Enhanced WebRTC API Endpoint (see API Documentation for usage examples).
+// The purpose of [**ATT.rtc.configure**](../../lib/webrtc-sdk/doc/ATT.rtc.html#configure) is to configure
+// the endpoints for creating access token and e911id. Additionally you can configure the URL for
+// Enhanced WebRTC API endpoint and the WebRTC URI.
 //```javascript
 //ATT.rtc.configure({
-//  ewebrtc_domain: 'my.domain.com',
-//  api_endpoint: 'https://api.att.com' // optional Enhanced WebRTC API endpoint
+//  token_endpoint: '/tokens',
+//  e911_endpoint: '/e911ids'
 //});
 //```
-//-------
-
-ATT.rtc.configure(function () {
-
-  // On successfully obtaining the configuration we will get the [**Enhanced WebRTC Domain**](../../lib/webrtc-sdk/doc/ATT.rtc.html#getEWebRTCDomain)
-  eWebRTCDomain = ATT.rtc.getEWebRTCDomain();
-
-  // and load the default view into the browser
-  loadDefaultView();
-
-}, onError);
+// or
+//```javascript
+//ATT.rtc.configure({
+//  token_endpoint: '/tokens',
+//  e911_endpoint: '/e911ids'
+//  api_endpoint: 'https://api.att.com' // optional Enhanced WebRTC API endpoint
+//  ewebrtc_uri: '/RC/v1' // optional Enhanced WebRTC API URI
+//});
+//```
+//-----------------------------------
+  ATT.rtc.configure({
+    token_endpoint: options.token_endpoint, // e.g. '/oauth/token'
+    e911_endpoint: options.e911_endpoint, // e.g. '/e911id'
+    api_endpoint: options.api_endpoint, // e.g. 'https://api.att.com'
+    ewebrtc_uri: options.ewebrtc_uri // e.g. '/RC/v1'
+  });
+}
 
 // ## The Phone Object
 // -----------
@@ -171,7 +164,7 @@ phone.on('notification', onNotification);
 // ### Create Access Token
 // ---------------------------------
 function createAccessToken(appScope, authCode, success, error) {
-//[**ATT.rtc.dhs.createAccessToken**](../../lib/webrtc-sdk/doc/ATT.rtc.dhs.html#createAccessToken)
+//[**ATT.rtc.createAccessToken**](../../lib/webrtc-sdk/doc/ATT.rtc.html#createAccessToken)
 // creates an access token that is needed before you can login.
 //
 // - `app_scope` is the type of access token you want to create
@@ -181,7 +174,7 @@ function createAccessToken(appScope, authCode, success, error) {
 // - `success` is the success callback
 //
 // - `error` is the failure callback
-  ATT.rtc.dhs.createAccessToken({
+  ATT.rtc.createAccessToken({
     app_scope: appScope,
     auth_code: authCode,
     success: success,
@@ -192,7 +185,7 @@ function createAccessToken(appScope, authCode, success, error) {
 // ### Associate Access Token
 // ---------------------------------
 function associateAccessToken(userId, accessToken, success, error) {
-//[**ATT.rtc.dhs.associateAccessToken**](../../lib/webrtc-sdk/doc/ATT.rtc.html#associateAccessToken)
+//[**ATT.rtc.associateAccessToken**](../../lib/webrtc-sdk/doc/ATT.rtc.html#associateAccessToken)
 // associates an access token to a user id that is needed before you can login.
 //
 // - `userId` is the user id that you want to associate the access token to
@@ -212,21 +205,23 @@ function associateAccessToken(userId, accessToken, success, error) {
 
 // ### Create e911 id
 // ---------------------------------
-function createE911Id(e911Token, address, success, error) {
-//[**ATT.rtc.dhs.createE911Id**](../../lib/webrtc-sdk/doc/ATT.rtc.dhs.html#createE911Id)
+function createE911Id(e911Token, address, is_confirmed, success, error) {
+//[**ATT.rtc.createE911Id**](../../lib/webrtc-sdk/doc/ATT.rtc.html#createE911Id)
 // associates an access token to a user id that is needed before you can login.
 //
 // - `token` is the e911 access token
 //
 // - `address` is the address that you want to create the e911 id for
 //
+// - `is_confirmed` confirm that the address exists even if not found in our database
+//
 // - `success` is the success callback
 //
 // - `error` is the failure callback
-  ATT.rtc.dhs.createE911Id({
+  ATT.rtc.createE911Id({
     token: e911Token,
     address: address,
-    // On successful E911 Id creation
+    is_confirmed: is_confirmed, // On successful E911 Id creation
     success: success,
     error: error
   });
@@ -279,15 +274,12 @@ phone.on('session:expired', onSessionExpired);
 
 // ### Clear the current Enhanced WebRTC session
 // ---------------------------------
-function phoneLogout(callback) {
+function phoneLogout() {
   if (checkEnhancedWebRTCSession()) {
     phone.on('error', function (data) {
       if (data.error && data.error.JSMethod === 'logout') {
-        callback();
+        onSessionDisconnected();
       }
-    });
-    phone.on('session:disconnected', function () {
-      callback();
     });
 //[**phone.logout**](../../lib/webrtc-sdk/doc/Phone.html#logout) logs out the user from Enhanced WebRTC session.
     phone.logout();
@@ -932,3 +924,20 @@ function getCallerInfo(callerUri) {
   // }`.
   return phone.getCallerInfo(callerUri);
 }
+
+// ## configure and load the sample app
+// ---------------------------------
+configureSampleApp(function (config) {
+
+  // configure the SDK
+  configure({
+    token_endpoint: '/oauth/token',
+    e911_endpoint: '/e911id',
+    api_endpoint: config.api_endpoint,
+    ewebrtc_uri: config.ewebrtc_uri
+  });
+
+  // load the default view into the browser
+  loadDefaultView();
+
+});

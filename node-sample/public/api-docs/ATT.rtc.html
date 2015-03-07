@@ -262,11 +262,12 @@
         
             <div class="description"><p>This namespace provides the methods necessary to configure the JS client library.</p>
 <ul>
-<li>You can use the <code>configure</code> method to request environment options from the
-built-in DHS. Alternatively you can also configure using your own environment options.</li>
+<li>You must configure the JS client library using <code>configure</code> method before you can
+use the <code>ATT.rtc.createAccessToken</code> or <code>ATT.rtc.createE911Id</code> method.</li>
+<li>You may use <code>createAccessToken</code> method to create an access token for any user type</li>
+<li>You may use <code>createE911Id</code> method to create an E911 Id for any mobile number or virtual number user</li>
 <li>You can use the <code>associateAccessToken</code> method to associate an access token with
-a virtual number or account id user id.</li>
-<li>Use <code>getEWebRTCDomain</code> to obtain the WebRTC domain setup for the library.</li>
+a virtual number or account id user.</li>
 </ul></div>
         
 
@@ -579,19 +580,19 @@ ATT.rtc.associateAccessToken({
         
             
 <dt>
-    <h4 class="name" id="configure"><span class="type-signature">&lt;static> </span>configure<span class="signature">(<span class="optional">options</span>, <span class="optional">success</span>, <span class="optional">error</span>)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="configure"><span class="type-signature">&lt;static> </span>configure<span class="signature">(options)</span><span class="type-signature"></span></h4>
     
     
-    <p class="summary">Setup the Enhanced WebRTC API endpoint and Enhanced WebRTC domain.</p>
+    <p class="summary">Setup the endpoints for token and e911 operations</p>
     
 </dt>
 <dd>
     
     
     <div class="description">
-        <p>If <code>options</code> object is provided, configure method will use the <code>options.ewebrtc_domain</code>
- and <code>[options.api_endpoint]</code> values as the application domain and api endpoint respectively.
-If no <code>options</code> were passed, the configuration will be requested from the built-in DHS and then applied.</p>
+        <p>Use this method to configure the endpoints for token and e911 operations that are used by
+<code>ATT.rtc.createAccessToken</code> and <code>ATT.rtc.createE911Id</code> methods.
+Optionally you may also configure AT&amp;T's enhanced WebRTC API endpoint and uri.</p>
     </div>
     
 
@@ -612,8 +613,6 @@ If no <code>options</code> were passed, the configuration will be requested from
 
 		<th>Type</th>
 
-		
-		<th>Argument</th>
 		
 
 		
@@ -639,16 +638,6 @@ If no <code>options</code> were passed, the configuration will be requested from
             
             </td>
 
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
             
 
             
@@ -681,7 +670,7 @@ If no <code>options</code> were passed, the configuration will be requested from
 
         <tr>
             
-                <td class="name"><code>ewebrtc_domain</code></td>
+                <td class="name"><code>token_endpoint</code></td>
             
 
             <td class="type">
@@ -705,7 +694,38 @@ If no <code>options</code> were passed, the configuration will be requested from
 
             
 
-            <td class="description last"><p>The Enhanced WebRTC Domain for your application.</p></td>
+            <td class="description last"><p>A RESTful [POST] web server endpoint URL for creating access token.</p></td>
+        </tr>
+
+	
+
+        <tr>
+            
+                <td class="name"><code>e911_endpoint</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last"><p>A RESTful [POST] web server endpoint URL for creating e911 id.</p></td>
         </tr>
 
 	
@@ -738,7 +758,40 @@ If no <code>options</code> were passed, the configuration will be requested from
 
             
 
-            <td class="description last"><p>The Enhanced WebRTC API URL.</p></td>
+            <td class="description last"><p>The Enhanced WebRTC API URL. The default is already configured.</p></td>
+        </tr>
+
+	
+
+        <tr>
+            
+                <td class="name"><code>ewebrtc_uri</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last"><p>The Enhanced WebRTC API URI. The default is already configured.</p></td>
         </tr>
 
 	
@@ -746,72 +799,6 @@ If no <code>options</code> were passed, the configuration will be requested from
 </table>
 
             </td>
-        </tr>
-
-	
-
-        <tr>
-            
-                <td class="name"><code>success</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">function</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-	
-
-        <tr>
-            
-                <td class="name"><code>error</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">function</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-
-            <td class="description last"></td>
         </tr>
 
 	
@@ -865,24 +852,25 @@ If no <code>options</code> were passed, the configuration will be requested from
     
         <h5>Examples</h5>
         
-    <pre class="sunlight-highlight-javascript">&#x2F;&#x2F; Configure using the Node DHS
-var success = function () {...};
-ATT.rtc.configure(success);</pre>
-
-    <pre class="sunlight-highlight-javascript">&#x2F;&#x2F; Configure using the Node DHS
-var success = function () {...};
-var error = function () {...};
-ATT.rtc.configure(success, error);</pre>
-
-    <pre class="sunlight-highlight-javascript">&#x2F;&#x2F; Configure using the provided options obtained elsewhere
-var phone = ATT.rtc.configure({
-  ewebrtc_domain: &#x27;my.domain.com&#x27;
+    <pre class="sunlight-highlight-javascript">&#x2F;&#x2F; Configure Token and E911 endpoints
+ATT.rtc.configure({
+  token_endpoint: &#x27;&#x2F;tokens&#x27;,
+  e911_endpoint: &#x27;&#x2F;e911ids&#x27;
 });</pre>
 
-    <pre class="sunlight-highlight-javascript">&#x2F;&#x2F; Configure using the provided options obtained elsewhere
-var phone = ATT.rtc.configure({
-  ewebrtc_domain: &#x27;my.domain.com&#x27;,
+    <pre class="sunlight-highlight-javascript">&#x2F;&#x2F; Configure Token, E911 and API endpoints
+ATT.rtc.configure({
+  token_endpoint: &#x27;&#x2F;tokens&#x27;,
+  e911_endpoint: &#x27;&#x2F;e911ids&#x27;,
   api_endpoint: &#x27;https:&#x2F;&#x2F;api.att.com&#x27;
+});</pre>
+
+    <pre class="sunlight-highlight-javascript">&#x2F;&#x2F; Configure Token, E911 and API endpoints
+ATT.rtc.configure({
+  token_endpoint: &#x27;&#x2F;tokens&#x27;,
+  e911_endpoint: &#x27;&#x2F;e911ids&#x27;,
+  api_endpoint: &#x27;https:&#x2F;&#x2F;api.att.com&#x27;,
+  ewebrtc_uri: &#x27;&#x2F;RC&#x2F;v1&#x27;
 });</pre>
 
 
@@ -892,20 +880,232 @@ var phone = ATT.rtc.configure({
         
             
 <dt>
-    <h4 class="name" id="getEWebRTCDomain"><span class="type-signature">&lt;static> </span>getEWebRTCDomain<span class="signature">()</span><span class="type-signature"> &rarr; {String}</span></h4>
+    <h4 class="name" id="createAccessToken"><span class="type-signature">&lt;static> </span>createAccessToken<span class="signature">(options)</span><span class="type-signature"></span></h4>
     
     
-    <p class="summary">Returns the Enhanced WebRTC Domain for the current application.</p>
+    <p class="summary">Create an Access Token using AT&T's OAuth for mobile number, virtual number and account id users.</p>
     
 </dt>
 <dd>
     
+    
+    <div class="description">
+        <p>This methods accepts a <code>app_scope</code> and creates the <code>access token</code> for that particular <code>app_scope</code>.
+Accepted values for <code>app_scope</code> are: <code>MOBILE_NUMBER</code>, <code>VIRTUAL_NUMBER</code>,
+<code>ACCOUNT_ID</code> and <code>E911</code>.</p>
+<p>For mobile number user, the method requires an additional param <code>auth_code</code> for the authorization code
+obtained during the consent flow.</p>
+    </div>
     
 
     
     
     
     
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params table table-striped">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+
+		<th>Type</th>
+
+		
+
+		
+
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+
+	<tbody>
+	
+
+        <tr>
+            
+                <td class="name"><code>options</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">
+                <h6>Properties</h6>
+                
+
+<table class="params table table-striped">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+
+		<th>Type</th>
+
+		
+		<th>Argument</th>
+		
+
+		
+
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+
+	<tbody>
+	
+
+        <tr>
+            
+                <td class="name"><code>app_scope</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last"><p>Application scope for getting access token</p></td>
+        </tr>
+
+	
+
+        <tr>
+            
+                <td class="name"><code>auth_code</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last"><p>Authorization Code from user consent for mobile number user.</p></td>
+        </tr>
+
+	
+
+        <tr>
+            
+                <td class="name"><code>success</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="ATT.rtc.html#accessTokenSuccess">ATT.rtc.accessTokenSuccess</a></span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last"><p>The callback that handles the
+succesful response after creating an AT&amp;T OAuth Access Token.</p></td>
+        </tr>
+
+	
+
+        <tr>
+            
+                <td class="name"><code>error</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="ATT.rtc.html#createTokenError">ATT.rtc.createTokenError</a></span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last"><p>The callback that handles the generated error.</p></td>
+        </tr>
+
+	
+	</tbody>
+</table>
+
+            </td>
+        </tr>
+
+	
+	</tbody>
+</table>
+
     
     
     
@@ -949,36 +1149,979 @@ var phone = ATT.rtc.configure({
     
     
     
-    <h5>Returns:</h5>
     
+    
+        <h5>Examples</h5>
+        
+    <pre class="sunlight-highlight-javascript">&#x2F;&#x2F; Create access token using DHS
+var success = function () {...};
+var error = function () {...};
+ATT.rtc.createAccessToken({
+  app_scope: &#x27;E911&#x27;,
+  success: success,
+  error: error
+});</pre>
+
+    <pre class="sunlight-highlight-javascript">&#x2F;&#x2F; Create access token using DHS
+var success = function () {...};
+var error = function () {...};
+ATT.rtc.createAccessToken({
+  app_scope: &#x27;MOBILE_NUMBER&#x27;,
+  auth_code: &#x27;auth_code_from_consent_flow&#x27;
+  success: success,
+  error: error
+});</pre>
+
+
+    
+</dd>
+
+        
             
-<div class="param-desc">
-    <p>The Enhanced WebRTC Domain setup for the current application.</p>
-</div>
+<dt>
+    <h4 class="name" id="createE911Id"><span class="type-signature">&lt;static> </span>createE911Id<span class="signature">(options)</span><span class="type-signature"></span></h4>
+    
+    
+    <p class="summary">Creates a new E911 Id using an `e911` scope access token and an address</p>
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>E911 Id is required for mobile number and virtual number user for creating enhanced webrtc session.
+Use this function to create an E911 Id that can be used for creating the enhanced webrtc session
+for mobile number and virtual number users.
+This method requires an access token obtained using <code>E911</code> auth_scope and a physical address with
+these <code>string</code> fields:</p>
+<ul>
+<li><p>first_name</p>
+</li>
+<li><p>last_name</p>
+</li>
+<li><p>house_number</p>
+</li>
+<li><p>street</p>
+</li>
+<li><p>unit (optional)</p>
+</li>
+<li><p>city</p>
+</li>
+<li><p>state</p>
+</li>
+<li><p>zip</p>
+</li>
+<li><p>is_confirmed (true or false)</p>
+</li>
+</ul>
+    </div>
+    
 
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
 
-
-<dl>
-	<dt>
-		Type
-	</dt>
-	<dd>
+<table class="params table table-striped">
+    <thead>
+	<tr>
 		
+		<th>Name</th>
+		
+
+		<th>Type</th>
+
+		
+
+		
+
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+
+	<tbody>
+	
+
+        <tr>
+            
+                <td class="name"><code>options</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">
+                <h6>Properties</h6>
+                
+
+<table class="params table table-striped">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+
+		<th>Type</th>
+
+		
+
+		
+
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+
+	<tbody>
+	
+
+        <tr>
+            
+                <td class="name"><code>token</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>E911 token</p></td>
+        </tr>
+
+	
+
+        <tr>
+            
+                <td class="name"><code>address</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Address object</p>
+                <h6>Properties</h6>
+                
+
+<table class="params table table-striped">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+
+		<th>Type</th>
+
+		
+		<th>Argument</th>
+		
+
+		
+
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+
+	<tbody>
+	
+
+        <tr>
+            
+                <td class="name"><code>first_name</code></td>
+            
+
+            <td class="type">
+            
+                
 <span class="param-type">String</span>
 
 
-	</dd>
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last"><p>First name</p></td>
+        </tr>
+
+	
+
+        <tr>
+            
+                <td class="name"><code>last_name</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last"><p>Last name</p></td>
+        </tr>
+
+	
+
+        <tr>
+            
+                <td class="name"><code>house_number</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last"><p>House number</p></td>
+        </tr>
+
+	
+
+        <tr>
+            
+                <td class="name"><code>street</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last"><p>Street name</p></td>
+        </tr>
+
+	
+
+        <tr>
+            
+                <td class="name"><code>unit</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last"><p>Unit/Apt./Suite number</p></td>
+        </tr>
+
+	
+
+        <tr>
+            
+                <td class="name"><code>city</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last"><p>City</p></td>
+        </tr>
+
+	
+
+        <tr>
+            
+                <td class="name"><code>state</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last"><p>State</p></td>
+        </tr>
+
+	
+
+        <tr>
+            
+                <td class="name"><code>zip</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last"><p>Zip code</p></td>
+        </tr>
+
+	
+	</tbody>
+</table>
+
+            </td>
+        </tr>
+
+	
+
+        <tr>
+            
+                <td class="name"><code>is_confirmed</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Confirm that the address exists (even if not found in the database)</p></td>
+        </tr>
+
+	
+
+        <tr>
+            
+                <td class="name"><code>success</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Success callback</p></td>
+        </tr>
+
+	
+
+        <tr>
+            
+                <td class="name"><code>error</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Failure callback</p></td>
+        </tr>
+
+	
+	</tbody>
+</table>
+
+            </td>
+        </tr>
+
+	
+	</tbody>
+</table>
+
+    
+    
+    
+<dl class="details">
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+
+	
+
+	
+
+	
 </dl>
 
-
-        
     
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+        <h5>Example</h5>
+        
+    <pre class="sunlight-highlight-javascript">&#x2F;&#x2F; Create E911 id
+var success = function () {...};
+var error = function () {...};
+ATT.rtc.createAccessToken({
+  token: &#x27;e911_id_scoped_access_token&#x27;,
+  address: {
+   first_name: &#x27;John&#x27;,
+   last_name: &#x27;Doe&#x27;,
+   house_number: &#x27;1111&#x27;,
+   street: &#x27;ABC Street&#x27;,
+   city: &#x27;Seattle&#x27;,
+   state: &#x27;WA&#x27;,
+   zip: &#x27;98001&#x27;
+  },
+  is_confirmed: false
+  success: success,
+  error: error
+});</pre>
+
+
     
 </dd>
 
         </dl>
     
 
+    
+        <h3 class="subsection-title">Type Definitions</h3>
+
+        <dl>
+                
+<dt>
+    <h4 class="name" id="accessTokenSuccess"><span class="type-signature"></span>accessTokenSuccess<span class="signature">(OAuthToken)</span><span class="type-signature"></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params table table-striped">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+
+		<th>Type</th>
+
+		
+
+		
+
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+
+	<tbody>
+	
+
+        <tr>
+            
+                <td class="name"><code>OAuthToken</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>An OAuth access token which must be
+presented by the authorized app to make subsequent RESTful API
+requests to the API Gateway.</p>
+                <h6>Properties</h6>
+                
+
+<table class="params table table-striped">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+
+		<th>Type</th>
+
+		
+
+		
+
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+
+	<tbody>
+	
+
+        <tr>
+            
+                <td class="name"><code>access_token</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Specifies a token that is used to request access to an API.</p></td>
+        </tr>
+
+	
+
+        <tr>
+            
+                <td class="name"><code>token_type</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Specifies the type for the new OAuth access token.</p></td>
+        </tr>
+
+	
+
+        <tr>
+            
+                <td class="name"><code>expires_in</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Specifies the number of seconds before the current
+OAuth access token expires.</p></td>
+        </tr>
+
+	
+
+        <tr>
+            
+                <td class="name"><code>refresh_token</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Specifies the token that is used to obtain a
+new OAuth access token after the initial OAuth access token that is returned
+in a previous response expires.</p></td>
+        </tr>
+
+	
+	</tbody>
+</table>
+
+            </td>
+        </tr>
+
+	
+	</tbody>
+</table>
+
+    
+    
+    
+<dl class="details">
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+
+	
+
+	
+
+	
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+        <h5>Example</h5>
+        
+    <pre class="sunlight-highlight-javascript">         {
+           &quot;access_token&quot;:&quot;Access_Token&quot;,
+           &quot;token_type&quot;:&quot;bearer&quot;,
+           &quot;expires_in&quot;:157680000,
+           &quot;refresh_token&quot;:&quot;Refresh_Token&quot;
+         }</pre>
+
+
+    
+</dd>
+
+            
+                
+<dt>
+    <h4 class="name" id="createTokenError"><span class="type-signature"></span>createTokenError<span class="signature">(error)</span><span class="type-signature"></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params table table-striped">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+
+		<th>Type</th>
+
+		
+
+		
+
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+
+	<tbody>
+	
+
+        <tr>
+            
+                <td class="name"><code>error</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>The details of the error.</p></td>
+        </tr>
+
+	
+	</tbody>
+</table>
+
+    
+    
+    
+<dl class="details">
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+
+	
+
+	
+
+	
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+            </dl>
     
 
     
@@ -1002,7 +2145,7 @@ var phone = ATT.rtc.configure({
 					
 		<span class="jsdoc-message">
 		Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.2</a>
-		on 2015-02-20T21:19:34-08:00 using the <a
+		on 2015-03-06T20:12:22-08:00 using the <a
 			href="https://github.com/terryweiss/docstrap">DocStrap template</a>.
 		</span>
 				</footer>
