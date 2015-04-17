@@ -13,7 +13,7 @@ This SDK includes the following components:
 The following features and functionality are available in the current SDK release for all three supported calling types
  (AT&T Mobile Number, Virtual Number, and Account ID):
 
-### Chrome v41
+### Chrome v42
 
 *	**Basic audio and video call management** – make, receive, answer, end, mute, unmute, hold, resume, cancel, and reject calls.
 *	**Basic audio and video conferencing** – create a conference, add and remove participants, hold, resume, mute, unmute and end conference.
@@ -35,18 +35,54 @@ The following features will be added soon:
 *	DTMF (dialing) tones
 
 
-# v1.0.0-rc.15
+# v1.0.0-rc.16
 
-April 3, 2015
+April 16, 2015
 
-* **Fix:** Users are not able to login again using the same Access Token.
-* **Fix:** SDK can dial second call by putting the previous call automatically on hold.
-* **Fix:** Video stream dropped when video call is on hold for 15 minutes or more, and the call is resumed.
+* **New**: New `ATT.logManager` features
+  * `getLogLevels`: Method to get all defined log levels for log manager.
+  * `getCurrentModuleLogLevels`: Method to get the current modules with their defined log levels.
+  * `getGlobalLogLevel`: Method to get the current log level for all modules.
+  * `setGlobalLogLevel`: Method to set a log level for all the modules.
+  * `resetLogLevels`: Method to reset log levels for all modules to their defaults.
+  * `getLoggers`: Method to get log manager's list of modules.
+  * `getModuleDefaults`: Method to get the modules with defined default log levels.
+  * `createCustomLogger`: Method to create a custom logger by passing a module name.
+  * `deleteCustomLogger`: Method to delete a custom logger by passing a module name.
+* **Changed**: Changed `ATT.logManager` feature
+    * `getLogger`: Method to get the logger object by passing the module name.
+* **Removed**: Removed from `ATT.logManager`
+  * `addLoggerForModule`
+  * `configureLogger`
+  * `getLoggerByName`
+  * `logLevel`
+  * `loggerType`
+  * `LOG_LEVEL`
+  * `LOGGER_TYPE`
+* **New**: New `ATT.logManager.Logger` features
+  * `isCustomType`: Returns true if a custom Logger
+  * `setLogLevel`: Sets log level of Logger
+  * `getLogLevel`: Gets log level of Logger
+* **Removed**: Removed from `ATT.logManager.Logger`
+  * `level`
+  * `setLevel`
+  * `setType`
+  * `Type`
+* **New:** Methods to manage configuration for `RTCPeerConnection`.
+  * `getIceServers`: Function to get the current ICE servers that the SDK uses for creating peer connections.
+  * `setIceServers`: Method to set the list of ICE server that the SDK uses for creating peer connections.
+  * `resetIceServers`: Method to reset the list of ICE servers to default list for peer connection configuration.
+  * `getIceTransport`: Function to get the current ICE transport value that the SDK uses for creating peer
+ connections.
+  * `setIceTransport`: Method to set the ICE transport that the SDK uses for creating peer connections.
+  * `resetIceTransport`: Method to reset the ICE transport value to the value for peer connection configuration.
+  * `getIpv6`: Function to get the ipv6 value that the SDK uses for creating peer connections.
+  * `setIpv6`: Method to set the ipv6 value that the SDK uses for creating peer connections.
+  * `resetIpv6`: Method to reset the ipv6 to the default value for peer connection configuration.
 
 ## Known Issues
-* Transfer features not supported in this release
-* `call:held` event is not being published when making second call.
-* Media stream may not function correctly unless IPv6 is disabled. 
+* Transfer features not supported in this release.
+* Media stream may not function correctly unless IPv6 is disabled. The default behavior is to use IPv4, so the developer doesn't need to explicitly disable IPv6. 
 * When any user started a conference and invites a PSTN user and the user rejects the invitation. I dont get
 invitation rejected event. 
 * While using Chrome , adding Mobile Device as a participant to a conference hosted by Mobile Number
@@ -96,14 +132,24 @@ invitation rejected event.
 
 ## Tested Environments
 
-* Chrome Version 41.0 for OSX v10.8.5 and Windows 8
+* Chrome Version 42.0 for OSX v10.8.5 and Windows 8
 
 **_The SDK may also work for other Operating Systems, other Browsers but is not tested or supported._**
 
 
 # Changelog
 
-# v1.0.0-rc.14
+
+## v1.0.0-rc.15
+
+April 3, 2015
+
+* **Fix:** Users are not able to login again using the same Access Token.
+* **Fix:** SDK can dial second call by putting the previous call automatically on hold.
+* **Fix:** Video stream dropped when video call is on hold for 15 minutes or more, and the call is resumed.
+
+
+## v1.0.0-rc.14
 
 March 22, 2015
 
@@ -117,7 +163,7 @@ March 22, 2015
  * `restify-dhs` is optional, use this only if you want a stand-alone node-dhs.
 * **Fix:** `phone.logout` method will always return after cleaning session and call resources if any.
 
-# v1.0.0-rc.13
+## v1.0.0-rc.13
 
 March 6, 2015
 
@@ -136,7 +182,7 @@ March 6, 2015
 
 
 
-# v1.0.0-rc.12
+## v1.0.0-rc.12
 
 February 20, 2015
 
