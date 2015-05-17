@@ -468,6 +468,8 @@ function resetUI() {
     document.getElementById('btn-switch').disabled = true;
     document.getElementById('btn-mute').disabled = true;
     document.getElementById('btn-unmute').disabled = true;
+    document.getElementById('btn-upgrade').disabled = true;
+    document.getElementById('btn-downgrade').disabled = true;
     document.getElementById('btn-hangup').disabled = true;
     document.getElementById('participant').disabled = true;
     document.getElementById('btn-add-participant').disabled = true;
@@ -480,6 +482,13 @@ function enableUI() {
   document.getElementById('btn-hold').disabled = false;
   document.getElementById('btn-resume').disabled = false;
   document.getElementById('btn-move').disabled = false;
+  if ('audio' === phone.getMediaType()) {
+    document.getElementById('btn-upgrade').disabled = false;
+    document.getElementById('btn-downgrade').disabled = true;
+  } else {
+    document.getElementById('btn-upgrade').disabled = true;
+    document.getElementById('btn-downgrade').disabled = false;
+  }
   document.getElementById('btn-mute').disabled = false;
   document.getElementById('btn-unmute').disabled = false;
   document.getElementById('btn-hangup').disabled = false;
@@ -713,6 +722,15 @@ function onCallConnected(data) {
   document.getElementById('btn-unmute').disabled = false;
   document.getElementById('btn-resume').disabled = false;
   document.getElementById('btn-move').disabled = false;
+
+  if ('audio' === phone.getMediaType()) {
+    document.getElementById('btn-upgrade').disabled = false;
+    document.getElementById('btn-downgrade').disabled = true;
+  } else {
+    document.getElementById('btn-upgrade').disabled = true;
+    document.getElementById('btn-downgrade').disabled = false;
+  }
+
 }
 
 function onCallSwitched(data) {
@@ -742,6 +760,15 @@ function onMediaEstablished() {
   document.getElementById('btn-unmute').disabled = false;
   document.getElementById('btn-resume').disabled = false;
   document.getElementById('btn-move').disabled = false;
+
+  if ('audio' === phone.getMediaType()) {
+    document.getElementById('btn-upgrade').disabled = false;
+    document.getElementById('btn-downgrade').disabled = true;
+  } else {
+    document.getElementById('btn-upgrade').disabled = true;
+    document.getElementById('btn-downgrade').disabled = false;
+  }
+
 }
 
 function onAnswering(data) {
@@ -839,6 +866,15 @@ function onTransferred(data) {
   setMessage('Call Transfer Successfully. Time: ' + data.timestamp);
 }
 
+function onMediaModification(data) {
+  setMessage('Call Modificaton in progress to ' + data.mediaType + '. Time: ' + data.timestamp);
+
+}
+
+function onStateChanged(data) {
+  setMessage('Call Modification Successful . State :' + data.state + '. Time: ' + data.timestamp);
+}
+
 function onCallDisconnected(data) {
   var peer,
     callerInfo,
@@ -928,6 +964,17 @@ function onCallRejected(data) {
   setMessage('Call ' + (data.from ? ('from ' + peer) : ('to '  + peer)) + ' rejected.' + ' Time: ' + data.timestamp);
   document.getElementById('ringtone').pause();
   document.getElementById('calling-tone').pause();
+}
+
+function onCallModification(data) {
+  var acceptModButton, rejectModButton;
+  if (phone.isCallInProgress()) {
+
+    acceptModButton = '<button type="button" id="accept-mod-button" class="btn btn-success btn-sm" onclick="acceptModification()">'
+      + '<span class="glyphicon glyphicon-ok"></span></button>';
+    setMessage('<h6>Call is being  modified from ' + phone.getMediaType() + ' To ' + data.mediaType + '. Time: ' + data.timestamp + ' </h6>' + acceptModButton, 'call:incoming');
+
+  }
 }
 
 function onAddressUpdated() {

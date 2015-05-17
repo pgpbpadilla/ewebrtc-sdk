@@ -34,56 +34,32 @@ The following features will be added soon:
 *	Upgrade or downgrade between audio and video
 *	DTMF (dialing) tones
 
+# v1.0.0-rc.17
 
-# v1.0.0-rc.16
+May 15, 2015
 
-April 16, 2015
-
-* **New**: New `ATT.logManager` features
-  * `getLogLevels`: Method to get all defined log levels for log manager.
-  * `getCurrentModuleLogLevels`: Method to get the current modules with their defined log levels.
-  * `getGlobalLogLevel`: Method to get the current log level for all modules.
-  * `setGlobalLogLevel`: Method to set a log level for all the modules.
-  * `resetLogLevels`: Method to reset log levels for all modules to their defaults.
-  * `getLoggers`: Method to get log manager's list of modules.
-  * `getModuleDefaults`: Method to get the modules with defined default log levels.
-  * `createCustomLogger`: Method to create a custom logger by passing a module name.
-  * `deleteCustomLogger`: Method to delete a custom logger by passing a module name.
-* **Changed**: Changed `ATT.logManager` feature
-    * `getLogger`: Method to get the logger object by passing the module name.
-* **Removed**: Removed from `ATT.logManager`
-  * `addLoggerForModule`
-  * `configureLogger`
-  * `getLoggerByName`
-  * `logLevel`
-  * `loggerType`
-  * `LOG_LEVEL`
-  * `LOGGER_TYPE`
-* **New**: New `ATT.logManager.Logger` features
-  * `isCustomType`: Returns true if a custom Logger
-  * `setLogLevel`: Sets log level of Logger
-  * `getLogLevel`: Gets log level of Logger
-* **Removed**: Removed from `ATT.logManager.Logger`
-  * `level`
-  * `setLevel`
-  * `setType`
-  * `Type`
-* **New:** Methods to manage configuration for `RTCPeerConnection`.
-  * `getIceServers`: Function to get the current ICE servers that the SDK uses for creating peer connections.
-  * `setIceServers`: Method to set the list of ICE server that the SDK uses for creating peer connections.
-  * `resetIceServers`: Method to reset the list of ICE servers to default list for peer connection configuration.
-  * `getIceTransport`: Function to get the current ICE transport value that the SDK uses for creating peer
- connections.
-  * `setIceTransport`: Method to set the ICE transport that the SDK uses for creating peer connections.
-  * `resetIceTransport`: Method to reset the ICE transport value to the value for peer connection configuration.
-  * `getIpv6`: Function to get the ipv6 value that the SDK uses for creating peer connections.
-  * `setIpv6`: Method to set the ipv6 value that the SDK uses for creating peer connections.
-  * `resetIpv6`: Method to reset the ipv6 to the default value for peer connection configuration.
+* **Fix**: Setting global logging level to trace throws JS error while making a call.
+* **Fix**: Error during transferring the call.
+* **Fix**: Video call quality on the call holder side is extremely poor following resume from hold.
+* **Fix**: Transfer to a provisioned Phone fails when in a video call with Non-Provisioned phone.
+* **Fix**: Transferring a call fails with HTTP error code `409` when an Account ID user transfers to a Mobile Device.
 
 ## Known Issues
-* Transfer features not supported in this release.
+* Downgrade fails after successful Call Move. 
+  * Given that Alice is logged in Browser A and Browser B
+  * And Bob is logged in a browser
+  * And both are currently in a Video call
+  * And Alice has successfully moved her call from Browser A to Browser B
+  * When Bob tries to downgrade the Video call
+  * Then the action fails with error `SVC0001:A service error has occurred. Error code is Parameter 'sdp' has invalid format.,Variables=Parameter 'sdp' has invalid format.`
+* When moving a call using `Phone.move`, the error message `Unrecognized event state: move-terminated` is printed in the browser console. The move operation is successful. 
+* When downgrading a call after successfully resuming it, the `Phone.downgrade` method fails with error message: `SVC0001:A service error has occurred. Error code is Parameter 'sdp' has invalid format.,Variables=Parameter 'sdp' has invalid format`. 
+* When holding a call after successfully downgrading it, the `Phone.hold` method fails with error message: `SVC0001:A service error has occurred. Error code is Parameter 'sdp' has invalid format.,Variables=Parameter 'sdp' has invalid format`. 
+* Downgrading muted call results in unmuted call on both sides. 
+* Recipient can resume a call that has been held by hold initiator. 
+* Transfer to a non-provsioned PSTN target fails while in video Call. 
 * Media stream may not function correctly unless IPv6 is disabled. The default behavior is to use IPv4, so the developer doesn't need to explicitly disable IPv6. 
-* When any user started a conference and invites a PSTN user and the user rejects the invitation. I dont get
+* When any user started a conference and invites a PSTN user and the user rejects the invitation. I don't get
 invitation rejected event. 
 * While using Chrome , adding Mobile Device as a participant to a conference hosted by Mobile Number
   results in one way audio with the notification `Media conference forbidden for this recipient`. 
@@ -139,6 +115,51 @@ invitation rejected event.
 
 # Changelog
 
+
+## v1.0.0-rc.16
+
+April 16, 2015
+
+* **New**: New `ATT.logManager` features
+  * `getLogLevels`: Method to get all defined log levels for log manager.
+  * `getCurrentModuleLogLevels`: Method to get the current modules with their defined log levels.
+  * `getGlobalLogLevel`: Method to get the current log level for all modules.
+  * `setGlobalLogLevel`: Method to set a log level for all the modules.
+  * `resetLogLevels`: Method to reset log levels for all modules to their defaults.
+  * `getLoggers`: Method to get log manager's list of modules.
+  * `getModuleDefaults`: Method to get the modules with defined default log levels.
+  * `createCustomLogger`: Method to create a custom logger by passing a module name.
+  * `deleteCustomLogger`: Method to delete a custom logger by passing a module name.
+* **Changed**: Changed `ATT.logManager` feature
+    * `getLogger`: Method to get the logger object by passing the module name.
+* **Removed**: Removed from `ATT.logManager`
+  * `addLoggerForModule`
+  * `configureLogger`
+  * `getLoggerByName`
+  * `logLevel`
+  * `loggerType`
+  * `LOG_LEVEL`
+  * `LOGGER_TYPE`
+* **New**: New `ATT.logManager.Logger` features
+  * `isCustomType`: Returns true if a custom Logger
+  * `setLogLevel`: Sets log level of Logger
+  * `getLogLevel`: Gets log level of Logger
+* **Removed**: Removed from `ATT.logManager.Logger`
+  * `level`
+  * `setLevel`
+  * `setType`
+  * `Type`
+* **New:** Methods to manage configuration for `RTCPeerConnection`.
+  * `getIceServers`: Function to get the current ICE servers that the SDK uses for creating peer connections.
+  * `setIceServers`: Method to set the list of ICE server that the SDK uses for creating peer connections.
+  * `resetIceServers`: Method to reset the list of ICE servers to default list for peer connection configuration.
+  * `getIceTransport`: Function to get the current ICE transport value that the SDK uses for creating peer
+ connections.
+  * `setIceTransport`: Method to set the ICE transport that the SDK uses for creating peer connections.
+  * `resetIceTransport`: Method to reset the ICE transport value to the value for peer connection configuration.
+  * `getIpv6`: Function to get the ipv6 value that the SDK uses for creating peer connections.
+  * `setIpv6`: Method to set the ipv6 value that the SDK uses for creating peer connections.
+  * `resetIpv6`: Method to reset the ipv6 to the default value for peer connection configuration.
 
 ## v1.0.0-rc.15
 
