@@ -34,17 +34,17 @@ The following features will be added soon:
 *	Upgrade or downgrade between audio and video
 *	DTMF (dialing) tones
 
-# v1.0.0-rc.17
+# v1.0.0-rc.18
 
-May 15, 2015
+May 22, 2015
 
-* **Fix**: Setting global logging level to trace throws JS error while making a call.
-* **Fix**: Error during transferring the call.
-* **Fix**: Video call quality on the call holder side is extremely poor following resume from hold.
-* **Fix**: Transfer to a provisioned Phone fails when in a video call with Non-Provisioned phone.
-* **Fix**: Transferring a call fails with HTTP error code `409` when an Account ID user transfers to a Mobile Device.
+* **Fix**: Mobile Number users with VoLTE devices are unable to answer incoming calls. The call keeps ringing and eventually goes to voicemail.
 
 ## Known Issues
+
+* Moving Video Call from Browser to Browser fails when in call with a provisioned PSTN. 
+* Transfer from Browser to a Provisioned non-VoLTE PSTN fails with different reasons. 
+* Transfer from a provisioned PSTN to a NOTN fails with `External Server request timeout`. 
 * Downgrade fails after successful Call Move. 
   * Given that Alice is logged in Browser A and Browser B
   * And Bob is logged in a browser
@@ -57,7 +57,7 @@ May 15, 2015
 * When holding a call after successfully downgrading it, the `Phone.hold` method fails with error message: `SVC0001:A service error has occurred. Error code is Parameter 'sdp' has invalid format.,Variables=Parameter 'sdp' has invalid format`. 
 * Downgrading muted call results in unmuted call on both sides. 
 * Recipient can resume a call that has been held by hold initiator. 
-* Transfer to a non-provsioned PSTN target fails while in video Call. 
+* Transfer to a non-provsioned PSTN target fails while in video Call. The transfer fails with error: `There was an error transferring the call. Forbidden` 
 * Media stream may not function correctly unless IPv6 is disabled. The default behavior is to use IPv4, so the developer doesn't need to explicitly disable IPv6. 
 * When any user started a conference and invites a PSTN user and the user rejects the invitation. I don't get
 invitation rejected event. 
@@ -114,6 +114,16 @@ invitation rejected event.
 
 
 # Changelog
+
+## v1.0.0-rc.17
+
+May 15, 2015
+
+* **Fix**: Setting global logging level to trace throws JS error while making a call.
+* **Fix**: Error during transferring the call.
+* **Fix**: Video call quality on the call holder side is extremely poor following resume from hold.
+* **Fix**: Transfer to a provisioned Phone fails when in a video call with Non-Provisioned phone.
+* **Fix**: Transferring a call fails with HTTP error code `409` when an Account ID user transfers to a Mobile Device.
 
 
 ## v1.0.0-rc.16
