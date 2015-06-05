@@ -14,7 +14,8 @@
   onCallRejected, onConferenceConnected, onConferenceDisconnected, onConferenceInvite, onConferenceCanceled,
   onConferenceEnded, onJoiningConference, onInvitationSent, onInviteAccepted, onInviteRejected,
   onParticipantRemoved, onConferenceDisconnecting, onConferenceHold, onConferenceResumed, onNotification,
-  onCallSwitched, onCallRingbackProvided, onTransferring, onTransferred, onCallMoved, onMediaModification, onCallModification*/
+  onCallSwitched, onCallRingbackProvided, onTransferring, onTransferred, onCallMoved, onMediaModification,
+  onStateChanged, onCallModification*/
 
 'use strict';
 
@@ -800,6 +801,15 @@ function downgrade() {
   // Use the [**phone.downgrade**](../../lib/webrtc-sdk/doc/Phone.html#downgrade) method to downgrade the ongoing video call.
   phone.downgrade();
 }
+
+
+function upgrade() {
+  // ### Upgrade a video call
+// -----------------------------------------
+  // Use the [**phone.upgrade**](../../lib/webrtc-sdk/doc/Phone.html#upgrade) method to upgrade the ongoing audio call.
+  phone.upgrade();
+}
+
 
 // ### Cancel an outgoing call
 // ---------------------------------
